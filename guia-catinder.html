@@ -70,10 +70,26 @@
   <h2>4. Usuarios Admin</h2>
   <table>
     <tr><th>Email</th><th>Password</th><th>Rol</th></tr>
-    <tr><td>admin@callcenter.com</td><td>admin123</td><td>Admin</td></tr>
-    <tr><td>raiquen@empresa.com</td><td>raiquen123</td><td>Admin</td></tr>
+    <tr><td>admin@cat.com</td><td>admin123</td><td>Admin</td></tr>
+    <tr><td>raiquen@cat.com</td><td>raiquen123</td><td>Admin</td></tr>
   </table>
   <p><strong>Restriccion de registro:</strong> Solo se permiten emails <code>@cat.com</code> (configurado via <code>ALLOWED_DOMAINS</code> en Render).</p>
+</div>
+
+<div class="section">
+  <h2>5. Optimizacion Mobile</h2>
+  <p>La app esta optimizada para dispositivos moviles con las siguientes mejoras:</p>
+  <ul>
+    <li><strong>Navbar:</strong> Menu hamburguesa en pantallas &lt;768px con sidebar animado</li>
+    <li><strong>Bottom Navigation:</strong> Barra de navegacion fija en la parte inferior con iconos de las secciones</li>
+    <li><strong>Swipe Cards:</strong> Tarjetas adaptadas a pantalla completa en mobile</li>
+    <li><strong>Auth Pages:</strong> Login y registro ajustados con padding reducido</li>
+    <li><strong>Chat:</strong> Altura completa ajustada para mobile (100vh - navbar - bottom nav)</li>
+    <li><strong>Admin:</strong> Tablas con scroll horizontal y stats en columna unica</li>
+    <li><strong>Break Zone:</strong> Grid de una columna en mobile</li>
+    <li><strong>Profile:</strong> Foto y formulario reducidos</li>
+  </ul>
+  <p><strong>Breakpoints:</strong> Mobile (&lt;768px), Desktop (&gt;768px)</p>
 </div>
 
 <div class="section">
@@ -244,13 +260,15 @@ CATINDER/
   <h2>10. Diseno Visual</h2>
   <ul>
     <li><strong>Tema:</strong> Oscuro (#0D0D1A) con gradientes rosa/naranja</li>
-    <li><strong>Navbar:</strong> Glassmorphism (backdrop-filter blur)</li>
+    <li><strong>Navbar:</strong> Glassmorphism (backdrop-filter blur) + hamburger menu en mobile</li>
+    <li><strong>Bottom Nav:</strong> Barra fija inferior en mobile con iconos de secciones</li>
     <li><strong>Botones:</strong> Gradiente pink→orange</li>
     <li><strong>Fondo login:</strong> Animacion de gradientes en movimiento (CSS keyframes)</li>
     <li><strong>Fondo global:</strong> Gradientes radiales estaticos</li>
     <li><strong>Cards:</strong> Borderradius 20px, sombras sutiles</li>
     <li><strong>Inputs:</strong> Borde transparente, glow al focus</li>
     <li><strong>Logo:</strong> Llama con corazon (#FF2D78 → #FF8C42)</li>
+    <li><strong>Mobile:</strong> Responsive con breakpoints en 768px</li>
   </ul>
 </div>
 

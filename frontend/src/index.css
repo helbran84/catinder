@@ -50,6 +50,12 @@ body {
   padding-top: 64px;
 }
 
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 72px;
+  }
+}
+
 .loading {
   display: flex;
   justify-content: center;
