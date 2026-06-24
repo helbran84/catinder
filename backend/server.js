@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Servidor CATINDER corriendo en puerto ${PORT}`);
+  console.log(`Servidor CATINDER corriendo en puerto ${PORT} v2`);
 });
 
 module.exports = { app, server, io };
