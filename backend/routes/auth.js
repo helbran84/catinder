@@ -148,11 +148,7 @@ router.post('/login', async (req, res) => {
       }, (authRes) => {
         let d = '';
         authRes.on('data', c => d += c);
-        authRes.on('end', () => {
-          console.log('SUPABASE AUTH STATUS:', authRes.statusCode);
-          console.log('SUPABASE AUTH BODY:', d.substring(0, 500));
-          resolve(JSON.parse(d));
-        });
+        authRes.on('end', () => resolve(JSON.parse(d)));
       });
       authReq.write(authBody);
       authReq.end();
@@ -160,11 +156,6 @@ router.post('/login', async (req, res) => {
 
     if (authResult.error) {
       return res.status(401).json({ error: 'Credenciales invalidas.' });
-    }
-
-    if (!authResult.user) {
-      console.error('AUTH NO USER:', JSON.stringify(authResult));
-      return res.status(401).json({ error: 'Credenciales invalidas (no user).' });
     }
 
     const userId = authResult.user.id;
@@ -204,27 +195,19 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('LOGIN ERROR:', error.message, error.stack);
-    res.status(500).json({ error: 'Error al iniciar sesion: ' + error.message });
+    console.error(error);
+    res.status(500).json({ error: 'Error al iniciar sesion.' });
   }
 });
 
 async function verifySupabaseToken(token) {
-  const https = require('https');
-  return new Promise((resolve, reject) => {
-    https.get(`${process.env.SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        'apikey': process.env.SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${token}`
-      }
-    }, (res) => {
-      let d = '';
-      res.on('data', c => d += c);
-      res.on('end', () => {
-        try { resolve(JSON.parse(d)); } catch(e) { reject(e); }
-      });
-    }).on('error', reject);
-  });
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    if (!payload.sub) return null;
+    return { id: payload.sub, email: payload.email };
+  } catch(e) {
+    return null;
+  }
 }
 
 router.post('/sync-user', async (req, res) => {
@@ -235,7 +218,7 @@ router.post('/sync-user', async (req, res) => {
     }
 
     const supaUser = await verifySupabaseToken(supabase_token);
-    if (!supaUser.id) {
+    if (!supaUser || !supaUser.id) {
       return res.status(401).json({ error: 'Token invalido.' });
     }
 
@@ -284,7 +267,7 @@ router.post('/create-profile', async (req, res) => {
     }
 
     const supaUser = await verifySupabaseToken(supabase_token);
-    if (!supaUser.id) {
+    if (!supaUser || !supaUser.id) {
       return res.status(401).json({ error: 'Token invalido.' });
     }
 
