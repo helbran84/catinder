@@ -148,7 +148,11 @@ router.post('/login', async (req, res) => {
       }, (authRes) => {
         let d = '';
         authRes.on('data', c => d += c);
-        authRes.on('end', () => resolve(JSON.parse(d)));
+        authRes.on('end', () => {
+          console.log('SUPABASE AUTH STATUS:', authRes.statusCode);
+          console.log('SUPABASE AUTH BODY:', d.substring(0, 200));
+          resolve(JSON.parse(d));
+        });
       });
       authReq.write(authBody);
       authReq.end();
@@ -156,6 +160,11 @@ router.post('/login', async (req, res) => {
 
     if (authResult.error) {
       return res.status(401).json({ error: 'Credenciales invalidas.' });
+    }
+
+    if (!authResult.user) {
+      console.error('AUTH NO USER:', JSON.stringify(authResult));
+      return res.status(401).json({ error: 'Credenciales invalidas (no user).' });
     }
 
     const userId = authResult.user.id;
