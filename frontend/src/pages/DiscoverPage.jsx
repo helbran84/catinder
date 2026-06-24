@@ -31,10 +31,10 @@ function DiscoverPage() {
   const [filters, setFilters] = useState({
     same_shift: false,
     same_campaign: false,
-    same_building: false,
     same_floor: false,
     role_filter: ''
   });
+  const [showFilters, setShowFilters] = useState(false);
 
   const loadProfiles = useCallback(async (pageNum = 1, append = false) => {
     if (append) {
@@ -144,6 +144,8 @@ function DiscoverPage() {
     );
   }
 
+  const activeFiltersCount = Object.values(filters).filter(v => v && v !== '').length;
+
   return (
     <div className="discover-page">
       {matchEffect && (
@@ -156,74 +158,71 @@ function DiscoverPage() {
         </div>
       )}
 
-      <div className="discover-container">
-        {/* Filtros */}
-        <div className="discover-filters">
-          <h3>Filtros</h3>
-          <div className="filter-options">
-            <label className={`filter-checkbox ${filters.same_shift ? 'active' : ''}`}>
-              <input
-                type="checkbox"
-                checked={filters.same_shift}
-                onChange={() => handleFilterChange('same_shift')}
-              />
-              <span>Mismo turno</span>
-            </label>
-            
-            <label className={`filter-checkbox ${filters.same_campaign ? 'active' : ''}`}>
-              <input
-                type="checkbox"
-                checked={filters.same_campaign}
-                onChange={() => handleFilterChange('same_campaign')}
-              />
-              <span>Misma campana</span>
-            </label>
-            
-            <label className={`filter-checkbox ${filters.same_building ? 'active' : ''}`}>
-              <input
-                type="checkbox"
-                checked={filters.same_building}
-                onChange={() => handleFilterChange('same_building')}
-              />
-              <span>Mismo piso</span>
-            </label>
-            
-            <label className={`filter-checkbox ${filters.same_floor ? 'active' : ''}`}>
-              <input
-                type="checkbox"
-                checked={filters.same_floor}
-                onChange={() => handleFilterChange('same_floor')}
-              />
-              <span>Mismo piso</span>
-            </label>
-          </div>
+      {/* Filter Modal */}
+      {showFilters && (
+        <div className="filter-modal-overlay" onClick={() => setShowFilters(false)}>
+          <div className="filter-modal" onClick={e => e.stopPropagation()}>
+            <div className="filter-modal-header">
+              <h3>Filtros</h3>
+              <button className="filter-modal-close" onClick={() => setShowFilters(false)}>✕</button>
+            </div>
 
-          <div className="role-filter" style={{marginTop: '0.5rem'}}>
-            <select 
-              value={filters.role_filter} 
-              onChange={(e) => handleFilterChange('role_filter', e.target.value)}
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '10px',
-                padding: '6px 12px',
-                color: 'var(--text-secondary)',
-                fontSize: '0.85rem',
-                width: '100%'
-              }}
-            >
-              <option value="">Todos los roles</option>
-              <option value="agente">Agentes</option>
-              <option value="lider">Lideres</option>
-              <option value="supervisor">Supervisores</option>
-            </select>
+            <div className="filter-modal-body">
+              <label className="filter-modal-option">
+                <span>Mismo turno</span>
+                <input type="checkbox" checked={filters.same_shift} onChange={() => handleFilterChange('same_shift')} />
+                <span className="filter-toggle"></span>
+              </label>
+
+              <label className="filter-modal-option">
+                <span>Misma campana</span>
+                <input type="checkbox" checked={filters.same_campaign} onChange={() => handleFilterChange('same_campaign')} />
+                <span className="filter-toggle"></span>
+              </label>
+
+              <label className="filter-modal-option">
+                <span>Mismo piso</span>
+                <input type="checkbox" checked={filters.same_floor} onChange={() => handleFilterChange('same_floor')} />
+                <span className="filter-toggle"></span>
+              </label>
+
+              <div className="filter-modal-option">
+                <span>Rol</span>
+                <select
+                  value={filters.role_filter}
+                  onChange={(e) => handleFilterChange('role_filter', e.target.value)}
+                  className="filter-modal-select"
+                >
+                  <option value="">Todos</option>
+                  <option value="agente">Agentes</option>
+                  <option value="lider">Lideres</option>
+                  <option value="supervisor">Supervisores</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="filter-modal-footer">
+              <button className="btn-secondary" onClick={() => {
+                setFilters({ same_shift: false, same_campaign: false, same_floor: false, role_filter: '' });
+              }}>Limpiar</button>
+              <button className="btn-primary" onClick={() => setShowFilters(false)}>Aplicar</button>
+            </div>
           </div>
-          
-          <div className="pagination-info">
-            {totalProfiles > 0 && (
-              <span>Mostrando {currentProfileIndex + 1} de {totalProfiles} perfiles</span>
+        </div>
+      )}
+
+      <div className="discover-container">
+        {/* Filter Button */}
+        <div className="discover-filter-bar">
+          <button className="filter-trigger" onClick={() => setShowFilters(true)}>
+            <span>⚙️ Filtros</span>
+            {activeFiltersCount > 0 && (
+              <span className="filter-badge">{activeFiltersCount}</span>
             )}
-          </div>
+          </button>
+          <span className="pagination-info">
+            {totalProfiles > 0 && `${currentProfileIndex + 1}/${totalProfiles}`}
+          </span>
         </div>
 
         {/* Tarjeta de perfil */}
