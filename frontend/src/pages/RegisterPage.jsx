@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import InterestPicker from '../components/InterestPicker';
 
 function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -17,7 +18,7 @@ function RegisterPage() {
     role: 'agente',
     position: '',
     bio: '',
-    interests: ''
+    interests: []
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -81,7 +82,8 @@ function RegisterPage() {
     try {
       await register({
         ...formData,
-        age: formData.age ? parseInt(formData.age) : undefined
+        age: formData.age ? parseInt(formData.age) : undefined,
+        interests: JSON.stringify(formData.interests)
       });
       navigate('/discover');
     } catch (err) {
@@ -270,13 +272,11 @@ function RegisterPage() {
               </div>
 
               <div className="input-group">
-                <label>Intereses (opcional)</label>
-                <input
-                  type="text"
-                  name="interests"
-                  value={formData.interests}
-                  onChange={handleChange}
-                  placeholder="musica, deportes, series"
+                <label>Intereses (maximo 5)</label>
+                <InterestPicker
+                  selected={formData.interests}
+                  onChange={(interests) => setFormData({ ...formData, interests })}
+                  max={5}
                 />
               </div>
 

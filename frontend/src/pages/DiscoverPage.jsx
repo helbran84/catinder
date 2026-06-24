@@ -1,6 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userService } from '../services/api';
 
+function parseInterests(interests) {
+  if (!interests) return [];
+  if (Array.isArray(interests)) return interests;
+  if (typeof interests === 'string') {
+    try {
+      const parsed = JSON.parse(interests);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) {
+      return interests.split(',').map(i => ({ name: i.trim() })).filter(i => i.name);
+    }
+  }
+  return [];
+}
+
 function DiscoverPage() {
   const [profiles, setProfiles] = useState([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
@@ -270,13 +284,18 @@ function DiscoverPage() {
                 <p className="profile-bio">{currentProfile.bio}</p>
               )}
               
-              {currentProfile.interests && currentProfile.interests.length > 0 && (
-                <div className="profile-interests">
-                  {currentProfile.interests.map((interest, index) => (
-                    <span key={index} className="interest-tag">{interest}</span>
-                  ))}
-                </div>
-              )}
+              {(() => {
+                const interests = parseInterests(currentProfile.interests);
+                return interests.length > 0 && (
+                  <div className="profile-interests">
+                    {interests.map((interest, index) => (
+                      <span key={interest.id || index} className="interest-tag">
+                        {interest.name || interest}
+                      </span>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="swipe-actions">

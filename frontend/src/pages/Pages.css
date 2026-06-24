@@ -1051,6 +1051,153 @@
 }
 
 /* ============================================
+   INTEREST PICKER
+   ============================================ */
+.interest-picker {
+  width: 100%;
+}
+
+.interest-counter {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.interest-counter .limit {
+  color: var(--danger-color);
+  font-weight: 700;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.selected-tag {
+  background: linear-gradient(135deg, rgba(255, 45, 120, 0.2), rgba(255, 140, 66, 0.2));
+  border: 1px solid rgba(255, 45, 120, 0.3);
+  color: var(--primary-color);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.selected-tag:hover {
+  background: rgba(255, 61, 113, 0.2);
+  border-color: var(--danger-color);
+}
+
+.interest-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.interest-category {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.category-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.category-header:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.category-header.expanded {
+  background: rgba(255, 45, 120, 0.08);
+  color: var(--primary-color);
+}
+
+.category-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  color: var(--text-muted);
+}
+
+.category-header.expanded .category-arrow {
+  transform: rotate(180deg);
+  color: var(--primary-color);
+}
+
+.category-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.interest-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interest-chip:hover:not(.disabled) {
+  border-color: rgba(255, 45, 120, 0.4);
+  color: var(--text-primary);
+}
+
+.interest-chip.selected {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-color: transparent;
+  color: white;
+}
+
+.interest-chip.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .selected-tag {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .category-header {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+  }
+
+  .category-items {
+    padding: 0.625rem 0.875rem;
+  }
+
+  .interest-chip {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================
    BREAK ZONE PAGE
    ============================================ */
 .breakzone-page {

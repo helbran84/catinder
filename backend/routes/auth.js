@@ -150,7 +150,7 @@ router.post('/login', async (req, res) => {
         authRes.on('data', c => d += c);
         authRes.on('end', () => {
           console.log('SUPABASE AUTH STATUS:', authRes.statusCode);
-          console.log('SUPABASE AUTH BODY:', d.substring(0, 200));
+          console.log('SUPABASE AUTH BODY:', d.substring(0, 500));
           resolve(JSON.parse(d));
         });
       });

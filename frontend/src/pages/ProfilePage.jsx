@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/api';
+import InterestPicker from '../components/InterestPicker';
+import { INTERESTS } from '../data/interests';
 
 function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [selectedInterests, setSelectedInterests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -16,8 +19,15 @@ function ProfilePage() {
   const loadProfile = async () => {
     try {
       const response = await userService.getProfile();
-      setProfile(response.data);
-      setFormData(response.data);
+      const data = response.data;
+      if (typeof data.interests === 'string' && data.interests) {
+        try { data.interests = JSON.parse(data.interests); } catch(e) { data.interests = []; }
+      } else if (!data.interests) {
+        data.interests = [];
+      }
+      setProfile(data);
+      setFormData(data);
+      setSelectedInterests(data.interests || []);
     } catch (error) {
       console.error('Error al cargar perfil:', error);
     } finally {
@@ -52,7 +62,8 @@ function ProfilePage() {
     try {
       await userService.updateProfile({
         ...formData,
-        age: formData.age ? parseInt(formData.age) : undefined
+        age: formData.age ? parseInt(formData.age) : undefined,
+        interests: JSON.stringify(selectedInterests)
       });
       setMessage('Perfil actualizado correctamente');
       setEditing(false);
@@ -147,11 +158,16 @@ function ProfilePage() {
                 <p className="detail-bio">{profile.bio}</p>
               )}
               
-              {profile?.interests && (
+              {profile?.interests && profile.interests.length > 0 && (
                 <div className="detail-interests">
-                  {profile.interests.split(',').map((interest, index) => (
-                    <span key={index} className="interest-tag">{interest.trim()}</span>
-                  ))}
+                  {Array.isArray(profile.interests)
+                    ? profile.interests.map((interest, index) => (
+                        <span key={interest.id || index} className="interest-tag">{interest.name || interest}</span>
+                      ))
+                    : profile.interests.split(',').map((interest, index) => (
+                        <span key={index} className="interest-tag">{interest.trim()}</span>
+                      ))
+                  }
                 </div>
               )}
 
@@ -288,13 +304,11 @@ function ProfilePage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Intereses</label>
-                  <input
-                    type="text"
-                    name="interests"
-                    value={formData.interests || ''}
-                    onChange={handleChange}
-                    placeholder="Separados por coma"
+                  <label>Intereses (maximo 5)</label>
+                  <InterestPicker
+                    selected={selectedInterests}
+                    onChange={setSelectedInterests}
+                    max={5}
                   />
                 </div>
               </div>
