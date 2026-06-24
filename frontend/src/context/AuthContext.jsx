@@ -10,26 +10,34 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const savedUser = localStorage.getItem('catinder_user');
-    const savedToken = localStorage.getItem('catinder_supabase_token');
-    if (savedUser && savedToken) {
+    if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
     setLoading(false);
   }, []);
 
+  const fetchProfile = async (userId) => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) throw new Error('Perfil no encontrado');
+    if (!data.is_active) throw new Error('Cuenta desactivada');
+    return data;
+  };
+
   const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
 
-    const supabaseToken = data.session.access_token;
-    localStorage.setItem('catinder_supabase_token', supabaseToken);
-
-    const response = await api.post('/auth/sync-user', { supabase_token: supabaseToken });
-    const profile = response.data.user;
+    const profile = await fetchProfile(data.user.id);
 
     localStorage.setItem('catinder_user', JSON.stringify(profile));
+    localStorage.setItem('catinder_supabase_token', data.session.access_token);
     setUser(profile);
-    return { user: profile, token: supabaseToken };
+    return { user: profile };
   };
 
   const register = async (registerData) => {
@@ -39,21 +47,33 @@ export function AuthProvider({ children }) {
       options: { data: { name: registerData.name } }
     });
     if (error) throw new Error(error.message);
+    if (!data.session) throw new Error('Error al crear cuenta. Verifica tu email.');
 
-    const supabaseToken = data.session?.access_token;
-    if (!supabaseToken) throw new Error('Error al crear cuenta. Verifica tu email.');
+    const profileData = {
+      id: data.user.id,
+      email: registerData.email,
+      name: registerData.name,
+      age: registerData.age || null,
+      campaign: registerData.campaign,
+      shift: registerData.shift,
+      shift_start: registerData.shift_start,
+      shift_end: registerData.shift_end,
+      floor: registerData.floor || null,
+      role: registerData.role || 'agente',
+      position: registerData.position || null,
+      bio: registerData.bio || null,
+      interests: registerData.interests || '[]',
+      is_active: true,
+      is_admin: false
+    };
 
-    localStorage.setItem('catinder_supabase_token', supabaseToken);
+    const { error: insertError } = await supabase.from('users').insert(profileData);
+    if (insertError) throw new Error('Error al crear perfil: ' + insertError.message);
 
-    const response = await api.post('/auth/create-profile', {
-      supabase_token: supabaseToken,
-      ...registerData
-    });
-    const profile = response.data.user;
-
-    localStorage.setItem('catinder_user', JSON.stringify(profile));
-    setUser(profile);
-    return { user: profile, token: supabaseToken };
+    localStorage.setItem('catinder_user', JSON.stringify(profileData));
+    localStorage.setItem('catinder_supabase_token', data.session.access_token);
+    setUser(profileData);
+    return { user: profileData };
   };
 
   const logout = async () => {
