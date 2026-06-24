@@ -54,6 +54,10 @@ function RegisterPage() {
         setError('El password debe tener minimo 6 caracteres');
         return;
       }
+      if (!formData.email.endsWith('@cat.com')) {
+        setError('Debes usar un email @cat.com');
+        return;
+      }
     }
     if (step === 2) {
       if (!formData.campaign || !formData.shift) {
@@ -141,10 +145,10 @@ function RegisterPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="tu@empresa.com"
+                  placeholder="xxxxx@cat.com"
                   required
                 />
-                <span className="input-hint">Solo emails de la empresa</span>
+                <span className="input-hint">Solo emails @cat.com</span>
               </div>
 
               <div className="input-group">

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Guia CATINDER</title>
+  <style>
+    @page { margin: 1.5cm; size: A4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1a1a2e; line-height: 1.6; background: #fff; padding: 2rem; }
+    .cover { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #FF2D78, #FF8C42); color: white; border-radius: 20px; margin-bottom: 2rem; }
+    .cover h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+    .cover p { font-size: 1.2rem; opacity: 0.9; }
+    .cover img { width: 100px; margin-bottom: 1rem; }
+    h2 { color: #FF2D78; font-size: 1.5rem; margin: 2rem 0 1rem; border-bottom: 2px solid #FF2D78; padding-bottom: 0.5rem; }
+    h3 { color: #FF8C42; font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+    p, li { font-size: 0.95rem; margin-bottom: 0.5rem; }
+    ul { padding-left: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    th { background: #FF2D78; color: white; padding: 10px; text-align: left; }
+    td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+    .section { page-break-inside: avoid; margin-bottom: 1.5rem; }
+    .highlight { background: #fff3f7; border-left: 4px solid #FF2D78; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+    .url { color: #FF2D78; font-weight: bold; }
+    .footer { text-align: center; margin-top: 3rem; color: #999; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>CATINDER</h1>
+  <p>Guia Completa del Proyecto</p>
+  <p>Matching para la Empresa</p>
+</div>
+
+<div class="section">
+  <h2>1. Que es CATINDER?</h2>
+  <p>CATINDER es una aplicacion tipo Tinder para que los empleados de la empresa se conozcan entre si. Los usuarios crean un perfil, hacen swipe a las personas que les interesan, y si hay match (los dos se dieron like), pueden chatear.</p>
+  <p>La app esta disenada para dos sectores: <strong>Cobranzas</strong> y <strong>Super Linea</strong>, con roles de Agente, Lider y Supervisor.</p>
+</div>
+
+<div class="section">
+  <h2>2. Stack Tecnologico</h2>
+  <table>
+    <tr><th>Capa</th><th>Tecnologia</th><th>Para que sirve</th></tr>
+    <tr><td>Frontend</td><td>React + Vite</td><td>Interfaz de usuario, routing, estado</td></tr>
+    <tr><td>Backend</td><td>Node.js + Express</td><td>API REST, autenticacion JWT</td></tr>
+    <tr><td>Realtime</td><td>Socket.IO</td><td>Chat en tiempo real</td></tr>
+    <tr><td>Base de datos</td><td>Supabase (PostgreSQL)</td><td>Almacenamiento de usuarios, matches, mensajes</td></tr>
+    <tr><td>Auth</td><td>Supabase Auth</td><td>Registro y login de usuarios</td></tr>
+    <tr><td>Storage</td><td>Supabase Storage</td><td>Fotos de perfil (max 5MB)</td></tr>
+    <tr><td>Deploy Frontend</td><td>Vercel</td><td>Hosting del frontend (gratis)</td></tr>
+    <tr><td>Deploy Backend</td><td>Render</td><td>Hosting del backend (gratis)</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>3. URLs de Produccion</h2>
+  <table>
+    <tr><th>Servicio</th><th>URL</th></tr>
+    <tr><td>Frontend</td><td class="url">https://catinder-app.vercel.app</td></tr>
+    <tr><td>Backend API</td><td class="url">https://catinder.onrender.com</td></tr>
+    <tr><td>GitHub</td><td class="url">https://github.com/helbran84/catinder</td></tr>
+    <tr><td>Supabase</td><td class="url">https://rscyxoumvoyutslvwtqo.supabase.co</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>4. Usuarios Admin</h2>
+  <table>
+    <tr><th>Email</th><th>Password</th><th>Rol</th></tr>
+    <tr><td>admin@callcenter.com</td><td>admin123</td><td>Admin</td></tr>
+    <tr><td>raiquen@empresa.com</td><td>raiquen123</td><td>Admin</td></tr>
+  </table>
+  <p><strong>Restriccion de registro:</strong> Solo se permiten emails <code>@cat.com</code> (configurado via <code>ALLOWED_DOMAINS</code> en Render).</p>
+</div>
+
+<div class="section">
+  <h2>5. Estructura del Proyecto</h2>
+  <pre style="background:#f5f5f5; padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;">
+CATINDER/
+├── backend/
+│   ├── server.js          # Servidor Express + Socket.IO
+│   ├── supabase-raw.js    # Helper HTTPS raw para Supabase
+│   ├── supabase.js        # Cliente Supabase (no usado)
+│   ├── render.yaml        # Config deploy Render
+│   ├── .env               # Variables de entorno
+│   ├── routes/
+│   │   ├── auth.js        # Login y registro
+│   │   ├── users.js       # Perfil, discover, swipe, break zones
+│   │   ├── matches.js     # Matches y mensajes
+│   │   └── admin.js       # CRUD de usuarios (admin)
+│   └── middleware/
+│       └── auth.js        # Validacion JWT + perfil
+├── frontend/
+│   ├── vercel.json        # Config deploy Vercel
+│   ├── index.html         # Meta tags OG
+│   ├── public/
+│   │   ├── logotipo.png   # Logo llama
+│   │   ├── catinder-logo.png  # Logo con texto
+│   │   └── catinder-text.png  # Texto para navbar
+│   └── src/
+│       ├── App.jsx        # Rutas de la app
+│       ├── App.css        # Navbar glassmorphism
+│       ├── index.css      # Tema global oscuro
+│       ├── context/
+│       │   └── AuthContext.jsx  # Estado de autenticacion
+│       ├── services/
+│       │   └── api.js     # Comunicacion con backend
+│       ├── components/
+│       │   └── Navbar.jsx  # Navegacion principal
+│       └── pages/
+│           ├── LoginPage.jsx       # Login
+│           ├── RegisterPage.jsx    # Registro 3 pasos
+│           ├── DiscoverPage.jsx    # Swipe + filtros
+│           ├── MatchesPage.jsx     # Lista de matches
+│           ├── ChatPage.jsx        # Chat en tiempo real
+│           ├── ProfilePage.jsx     # Editar perfil
+│           ├── BreakZone.jsx       # Zona de descanso por sector
+│           ├── AdminPage.jsx       # Panel de admin
+│           └── Pages.css           # Estilos de todas las paginas
+└── guia-catinder.html     # Esta guia
+  </pre>
+</div>
+
+<div class="section">
+  <h2>6. Funcionalidades</h2>
+  <h3>6.1 Autenticacion</h3>
+  <ul>
+    <li>Registro en 3 pasos: Datos personales, Turno/Empresa, Ubicacion</li>
+    <li>Login con email <code>@cat.com</code> y password</li>
+    <li>JWT token con expiracion de 7 dias</li>
+    <li>Solo emails corporativos validos (configurable via <code>ALLOWED_DOMAINS</code>)</li>
+  </ul>
+
+  <h3>6.2 Discover (Swipe)</h3>
+  <ul>
+    <li>Swipe derecha = like, izquierda = pasar</li>
+    <li>Filtros: buscar por nombre, filtrar por rol (Agente/Lider/Supervisor)</li>
+    <li>Muestra nombre, piso, turno, rol y bio</li>
+    <li>Animaciones CSS para swipe</li>
+  </ul>
+
+  <h3>6.3 Matches y Chat</h3>
+  <ul>
+    <li>Lista de matches mutuos</li>
+    <li>Chat en tiempo real con Socket.IO</li>
+    <li>Mensajes persistidos en Supabase</li>
+    <li>Indicador de usuario en linea</li>
+  </ul>
+
+  <h3>6.4 Break Zone</h3>
+  <ul>
+    <li>Zona de descanso por sector (Cobranzas / Super Linea)</li>
+    <li>Ve quielen estan disponibles en su turno</li>
+    <li>Separados por campana</li>
+  </ul>
+
+  <h3>6.5 Admin</h3>
+  <ul>
+    <li>Ver todos los usuarios</li>
+    <li>Crear, editar, eliminar usuarios</li>
+    <li>Desactivar cuentas</li>
+    <li>Badges de colores por rol</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>7. Variables de Entorno</h2>
+  <h3>Backend (Render)</h3>
+  <table>
+    <tr><th>Variable</th><th>Valor</th></tr>
+    <tr><td><code>SUPABASE_URL</code></td><td>https://rscyxoumvoyutslvwtqo.supabase.co</td></tr>
+    <tr><td><code>SUPABASE_ANON_KEY</code></td><td>eyJhbG... (anon key)</td></tr>
+    <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>eyJhbG... (service role key)</td></tr>
+    <tr><td><code>JWT_SECRET</code></td><td>tu-jwt-secret</td></tr>
+    <tr><td><code>FRONTEND_URL</code></td><td>https://catinder-app.vercel.app</td></tr>
+    <tr><td><code>ALLOWED_DOMAINS</code></td><td>cat.com</td></tr>
+    <tr><td><code>NODE_ENV</code></td><td>production</td></tr>
+  </table>
+
+  <h3>Frontend (Vercel)</h3>
+  <table>
+    <tr><th>Variable</th><th>Valor</th></tr>
+    <tr><td><code>VITE_API_URL</code></td><td>https://catinder.onrender.com/api</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>8. APIs del Backend</h2>
+  <table>
+    <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+    <tr><td>GET</td><td><code>/api/health</code></td><td>Health check</td></tr>
+    <tr><td>POST</td><td><code>/api/auth/register</code></td><td>Registrar usuario</td></tr>
+    <tr><td>POST</td><td><code>/api/auth/login</code></td><td>Iniciar sesion</td></tr>
+    <tr><td>GET</td><td><code>/api/users/me</code></td><td>Obtener mi perfil</td></tr>
+    <tr><td>PATCH</td><td><code>/api/users/me</code></td><td>Actualizar mi perfil</td></tr>
+    <tr><td>GET</td><td><code>/api/users/discover</code></td><td>Personas para hacer swipe</td></tr>
+    <tr><td>POST</td><td><code>/api/users/swipe/:userId</code></td><td>Like o dislike</td></tr>
+    <tr><td>GET</td><td><code>/api/users/break/zones</code></td><td>Usuarios en zona de descanso</td></tr>
+    <tr><td>GET</td><td><code>/api/matches</code></td><td>Lista de matches</td></tr>
+    <tr><td>GET</td><td><code>/api/matches/:id/messages</code></td><td>Mensajes de un chat</td></tr>
+    <tr><td>POST</td><td><code>/api/matches/:id/messages</code></td><td>Enviar mensaje</td></tr>
+    <tr><td>GET</td><td><code>/api/admin/users</code></td><td>Todos los usuarios (admin)</td></tr>
+    <tr><td>POST</td><td><code>/api/admin/users</code></td><td>Crear usuario (admin)</td></tr>
+    <tr><td>PATCH</td><td><code>/api/admin/users/:id</code></td><td>Editar usuario (admin)</td></tr>
+    <tr><td>DELETE</td><td><code>/api/admin/users/:id</code></td><td>Eliminar usuario (admin)</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>9. Deploy</h2>
+  <h3>9.1 Frontend (Vercel)</h3>
+  <ol>
+    <li>Conectar repo de GitHub en vercel.com</li>
+    <li>Configurar <code>VITE_API_URL</code> apuntando al backend</li>
+    <li>Desactivar Deployment Protection en Settings</li>
+    <li>Deploy automatico con cada push a main</li>
+  </ol>
+
+  <h3>9.2 Backend (Render)</h3>
+  <ol>
+    <li>Crear Web Service en render.com</li>
+    <li>Conectar repo GitHub</li>
+    <li>Root Directory: <code>backend</code></li>
+    <li>Build: <code>npm install</code></li>
+    <li>Start: <code>node server.js</code></li>
+    <li>Agregar todas las env vars</li>
+    <li>Plan: Free</li>
+  </ol>
+
+  <h3>9.3 Base de Datos (Supabase)</h3>
+  <ol>
+    <li>Crear proyecto en supabase.com</li>
+    <li>Crear tabla <code>users</code> con los campos necesarios</li>
+    <li>Configurar Auth con email confirmado automaticamente</li>
+    <li>Crear bucket <code>profile-pictures</code> en Storage</li>
+    <li>Obtener URL, anon key y service role key</li>
+  </ol>
+</div>
+
+<div class="section">
+  <h2>10. Diseno Visual</h2>
+  <ul>
+    <li><strong>Tema:</strong> Oscuro (#0D0D1A) con gradientes rosa/naranja</li>
+    <li><strong>Navbar:</strong> Glassmorphism (backdrop-filter blur)</li>
+    <li><strong>Botones:</strong> Gradiente pink→orange</li>
+    <li><strong>Fondo login:</strong> Animacion de gradientes en movimiento (CSS keyframes)</li>
+    <li><strong>Fondo global:</strong> Gradientes radiales estaticos</li>
+    <li><strong>Cards:</strong> Borderradius 20px, sombras sutiles</li>
+    <li><strong>Inputs:</strong> Borde transparente, glow al focus</li>
+    <li><strong>Logo:</strong> Llama con corazon (#FF2D78 → #FF8C42)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>11. Decisiones Tecnicas</h2>
+  <div class="highlight">
+    <strong>Por que raw HTTPS en vez de @supabase/supabase-js?</strong><br>
+    El cliente de Supabase JS retorna resultados vacios en contexto servidor. Se uso <code>https</code> nativo de Node.js para hacer requests directos al REST API de Supabase, lo cual funciona correctamente.
+  </div>
+  <div class="highlight">
+    <strong>Por que vercel.json con rewrite?</strong><br>
+    El patron <code>/((?!.*\.).*)</code> permite que las rutas SPA funcionen (ej: /discover → index.html) mientras que los archivos estaticos (/logotipo.png) se sirven normalmente.
+  </div>
+  <div class="highlight">
+    <strong>Por que ALLOWED_DOMAINS?</strong><br>
+    Para restringir el registro solo a emails corporativos. Se configura en Render y se valida en el endpoint <code>/api/auth/register</code>.
+  </div>
+</div>
+
+<div class="section">
+  <h2>12. Comandos Utiles</h2>
+  <table>
+    <tr><th>Accion</th><th>Comando</th></tr>
+    <tr><td>Deploy frontend</td><td><code>vercel --yes --prod</code></td></tr>
+    <tr><td>Restore alias</td><td><code>vercel alias set &lt;deployment-url&gt; catinder-app.vercel.app</code></td></tr>
+    <tr><td>Push codigo</td><td><code>git add .; git commit -m "msg"; git push</code></td></tr>
+    <tr><td>Ver env vars Vercel</td><td><code>vercel env ls</code></td></tr>
+    <tr><td>Renombrar proyecto</td><td><code>vercel project rename &lt;old&gt; &lt;new&gt;</code></td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  <p>CATINDER - Guia del Proyecto | Generado el 24/06/2026</p>
+  <p>helbran84 | catinder-app.vercel.app</p>
+</div>
+
+</body>
+</html>
