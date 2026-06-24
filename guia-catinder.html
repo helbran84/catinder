@@ -2,317 +2,561 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Guia CATINDER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Completa CATINDER</title>
   <style>
-    @page { margin: 1.5cm; size: A4; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1a1a2e; line-height: 1.6; background: #fff; padding: 2rem; }
-    .cover { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #FF2D78, #FF8C42); color: white; border-radius: 20px; margin-bottom: 2rem; }
-    .cover h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-    .cover p { font-size: 1.2rem; opacity: 0.9; }
-    .cover img { width: 100px; margin-bottom: 1rem; }
-    h2 { color: #FF2D78; font-size: 1.5rem; margin: 2rem 0 1rem; border-bottom: 2px solid #FF2D78; padding-bottom: 0.5rem; }
-    h3 { color: #FF8C42; font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
-    p, li { font-size: 0.95rem; margin-bottom: 0.5rem; }
-    ul { padding-left: 1.5rem; }
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
-    th { background: #FF2D78; color: white; padding: 10px; text-align: left; }
-    td { padding: 8px 10px; border-bottom: 1px solid #eee; }
-    tr:nth-child(even) { background: #f9f9f9; }
-    code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
-    .section { page-break-inside: avoid; margin-bottom: 1.5rem; }
-    .highlight { background: #fff3f7; border-left: 4px solid #FF2D78; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
-    .url { color: #FF2D78; font-weight: bold; }
-    .footer { text-align: center; margin-top: 3rem; color: #999; font-size: 0.8rem; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d0d1a;
+      color: #e0e0e0;
+      line-height: 1.7;
+      padding: 2rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #FF2D78, #FF8C42);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      color: #FF2D78;
+      font-size: 1.3rem;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 45, 120, 0.2);
+    }
+    h3 { color: #FF8C42; font-size: 1rem; margin: 1rem 0 0.5rem; }
+    p { color: #b0b0b0; margin-bottom: 0.75rem; }
+    .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    th {
+      background: rgba(255, 45, 120, 0.1);
+      color: #FF2D78;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 45, 120, 0.15);
+    }
+    td {
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ccc;
+    }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    .tag {
+      display: inline-block;
+      background: rgba(255, 45, 120, 0.12);
+      color: #FF2D78;
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 2px;
+    }
+    .tag.green { background: rgba(0, 214, 143, 0.12); color: #00D68F; }
+    .tag.blue { background: rgba(59, 130, 246, 0.12); color: #3B82F6; }
+    .tag.orange { background: rgba(255, 140, 66, 0.12); color: #FF8C42; }
+    .tag.purple { background: rgba(139, 92, 246, 0.12); color: #8B5CF6; }
+    code {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: #FF8C42;
+    }
+    pre {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      margin: 0.75rem 0;
+    }
+    pre code { background: none; padding: 0; color: #b0b0b0; }
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .check { color: #00D68F; }
+    .cross { color: #FF3D71; }
+    ul { padding-left: 1.5rem; margin: 0.5rem 0; }
+    li { margin: 0.3rem 0; color: #b0b0b0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 45, 120, 0.2), transparent);
+      margin: 2rem 0;
+    }
+    .route-method {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: monospace;
+    }
+    .get { background: rgba(0, 214, 143, 0.15); color: #00D68F; }
+    .post { background: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+    .put { background: rgba(255, 140, 66, 0.15); color: #FF8C42; }
+    .del { background: rgba(255, 61, 113, 0.15); color: #FF3D71; }
+    .todo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      margin: 0.5rem 0;
+    }
+    .todo-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .todo-text strong { color: #e0e0e0; }
+    .todo-text span { color: #888; font-size: 0.85rem; }
   </style>
 </head>
 <body>
+<div class="container">
 
-<div class="cover">
-  <h1>CATINDER</h1>
-  <p>Guia Completa del Proyecto</p>
-  <p>Matching para la Empresa</p>
+<h1>CATINDER</h1>
+<p class="subtitle">Guia completa del proyecto — Tecnologias, arquitectura, estado actual y roadmap</p>
+
+<!-- ============================================ -->
+<h2>1. Stack Tecnologico</h2>
+
+<table>
+  <tr><th>Capa</th><th>Tecnologia</th><th>Version</th><th>Para que sirve</th></tr>
+  <tr><td>Frontend</td><td>React</td><td>18.2</td><td>Libreria de UI, componentes</td></tr>
+  <tr><td>Frontend</td><td>Vite</td><td>5.0</td><td>Bundler, dev server, hot reload</td></tr>
+  <tr><td>Frontend</td><td>React Router</td><td>6.20</td><td>Ruteo client-side (/discover, /chat, etc)</td></tr>
+  <tr><td>Frontend</td><td>Axios</td><td>1.6</td><td>HTTP client para llamar al backend</td></tr>
+  <tr><td>Frontend</td><td>Socket.IO Client</td><td>4.7</td><td>Chat en tiempo real (WebSockets)</td></tr>
+  <tr><td>Frontend</td><td>Supabase JS</td><td>2.108</td><td>Auth directo + consultas al DB</td></tr>
+  <tr><td>Backend</td><td>Node.js</td><td>—</td><td>Runtime de JavaScript en servidor</td></tr>
+  <tr><td>Backend</td><td>Express</td><td>4.18</td><td>Framework HTTP (rutas, middleware)</td></tr>
+  <tr><td>Backend</td><td>Socket.IO</td><td>4.7</td><td>Servidor WebSockets para chat</td></tr>
+  <tr><td>Backend</td><td>JSON Web Tokens</td><td>9.0</td><td>Autenticacion con JWT</td></tr>
+  <tr><td>Backend</td><td>Multer</td><td>1.4</td><td>Manejo de uploads de archivos</td></tr>
+  <tr><td>DB</td><td>Supabase (PostgreSQL)</td><td>—</td><td>Base de datos relacional + Auth + Storage</td></tr>
+  <tr><td>Deploy</td><td>Vercel</td><td>—</td><td>Hosting frontend (estatico, CDN global)</td></tr>
+  <tr><td>Deploy</td><td>Render</td><td>—</td><td>Hosting backend (Node.js, free tier)</td></tr>
+</table>
+
+<h3>Lenguajes</h3>
+<p>
+  <span class="tag">JavaScript</span> <span class="tag blue">JSX (React)</span> <span class="tag orange">SQL (PostgreSQL)</span> <span class="tag green">CSS3</span> <span class="tag purple">HTML5</span>
+</p>
+<p>No usamos TypeScript. Todo el codigo es JavaScript vanilla con JSX para componentes React.</p>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>2. Arquitectura del Sistema</h2>
+
+<div class="card">
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                    FRONTEND (Vercel)                     │
+│  React + Vite + Socket.IO Client + Supabase JS Client   │
+│                                                         │
+│  Auth: Supabase Auth ──────────┐                        │
+│  API calls: Axios ──────────┐  │                        │
+│  Chat: Socket.IO ─────────┐ │  │                        │
+│                            │ │  │                        │
+├────────────────────────────┼─┼──┼────────────────────────┤
+│                            │ │  │                        │
+│    ┌───────────────────────▼─▼──▼──────────────────┐     │
+│    │           BACKEND (Render)                     │     │
+│    │  Express + Socket.IO Server + Multer           │     │
+│    │                                                │     │
+│    │  Routes:                                       │     │
+│    │    /api/auth   → register, login, sync-user    │     │
+│    │    /api/users  → profile, discover, swipe      │     │
+│    │    /api/matches → matches, messages            │     │
+│    │    /api/admin  → stats, CRUD users             │     │
+│    │                                                │     │
+│    │  Supabase: raw HTTPS (supabase-raw.js)         │     │
+│    └────────────────────────────────────────────────┘     │
+│                           │                              │
+├───────────────────────────┼──────────────────────────────┤
+│                           │                              │
+│    ┌──────────────────────▼──────────────────────┐       │
+│    │          SUPABASE (Cloud)                     │       │
+│    │                                               │       │
+│    │  PostgreSQL: users, swipes, matches,          │       │
+│    │              messages, break_requests          │       │
+│    │  Auth: Supabase Auth (email/password)         │       │
+│    │  Storage: profile-photos bucket               │       │
+│    │  REST API: PostgREST (para raw queries)       │       │
+│    └───────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────┘</code></pre>
 </div>
 
-<div class="section">
-  <h2>1. Que es CATINDER?</h2>
-  <p>CATINDER es una aplicacion tipo Tinder para que los empleados de la empresa se conozcan entre si. Los usuarios crean un perfil, hacen swipe a las personas que les interesan, y si hay match (los dos se dieron like), pueden chatear.</p>
-  <p>La app esta disenada para dos sectores: <strong>Cobranzas</strong> y <strong>Super Linea</strong>, con roles de Agente, Lider y Supervisor.</p>
+<h3>Flujo de autenticacion</h3>
+<ol style="padding-left: 1.5rem; color: #b0b0b0;">
+  <li>El usuario registra/inicia sesion desde el frontend</li>
+  <li>El frontend llama directamente a <code>supabase.auth.signUp()</code> o <code>signInWithPassword()</code></li>
+  <li>Supabase retorna un JWT token (guardado en localStorage)</li>
+  <li>El frontend usa ese token para llamar al backend (header <code>Authorization: Bearer &lt;token&gt;</code>)</li>
+  <li>El backend decodifica el JWT directamente (sin llamar a Supabase) y busca el perfil en la tabla <code>users</code></li>
+</ol>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>3. Estructura de la Base de Datos</h2>
+
+<h3>Tabla: users</h3>
+<table>
+  <tr><th>Columna</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>id</code></td><td>UUID (PK)</td><td>Same que Supabase Auth user ID</td></tr>
+  <tr><td><code>email</code></td><td>TEXT UNIQUE</td><td>Email @cat.com</td></tr>
+  <tr><td><code>name</code></td><td>TEXT</td><td>Nombre completo</td></tr>
+  <tr><td><code>age</code></td><td>INTEGER</td><td>Edad</td></tr>
+  <tr><td><code>campaign</code></td><td>TEXT</td><td>"Cobranzas" o "Super Linea"</td></tr>
+  <tr><td><code>shift</code></td><td>TEXT</td><td>"manana" o "tarde"</td></tr>
+  <tr><td><code>shift_start / shift_end</code></td><td>TEXT</td><td>"09:00" / "14:30"</td></tr>
+  <tr><td><code>floor</code></td><td>TEXT</td><td>"Piso 1" - "Piso 4"</td></tr>
+  <tr><td><code>role</code></td><td>TEXT</td><td>"agente", "lider", "supervisor"</td></tr>
+  <tr><td><code>position</code></td><td>TEXT</td><td>Puesto de trabajo</td></tr>
+  <tr><td><code>bio</code></td><td>TEXT</td><td>Biografia personal</td></tr>
+  <tr><td><code>interests</code></td><td>TEXT (JSON)</td><td>Intereses seleccionados (max 5)</td></tr>
+  <tr><td><code>photo</code></td><td>TEXT</td><td>Ruta en Supabase Storage</td></tr>
+  <tr><td><code>hide_from_bosses</code></td><td>BOOLEAN</td><td>Ocultar de supervisores</td></tr>
+  <tr><td><code>is_on_break</code></td><td>BOOLEAN</td><td>En zona de descanso</td></tr>
+  <tr><td><code>is_active</code></td><td>BOOLEAN</td><td>Cuenta activa</td></tr>
+  <tr><td><code>is_admin</code></td><td>BOOLEAN</td><td>Es admin del sistema</td></tr>
+</table>
+
+<h3>Tabla: swipes</h3>
+<table>
+  <tr><th>Columna</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>swiper_id</code></td><td>UUID FK</td><td>Quien swippeo</td></tr>
+  <tr><td><code>swiped_id</code></td><td>UUID FK</td><td>A quien swippeo</td></tr>
+  <tr><td><code>direction</code></td><td>TEXT</td><td>"like" o "nope"</td></tr>
+</table>
+
+<h3>Tabla: matches</h3>
+<table>
+  <tr><th>Columna</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>user1_id / user2_id</code></td><td>UUID FK</td><td>Los dos usuarios (ordenados)</td></tr>
+  <tr><td><code>is_break_match</code></td><td>BOOLEAN</td><td>Creado desde Break Zone</td></tr>
+</table>
+
+<h3>Tabla: messages</h3>
+<table>
+  <tr><th>Columna</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>match_id</code></td><td>BIGINT FK</td><td>Match al que pertenece</td></tr>
+  <tr><td><code>sender_id</code></td><td>UUID FK</td><td>Quien envio el mensaje</td></tr>
+  <tr><td><code>content</code></td><td>TEXT</td><td>Texto del mensaje</td></tr>
+  <tr><td><code>is_read</code></td><td>BOOLEAN</td><td>Leido o no</td></tr>
+</table>
+
+<h3>Tabla: break_requests</h3>
+<table>
+  <tr><th>Columna</th><th>Tipo</th><th>Descripcion</th></tr>
+  <tr><td><code>user_id</code></td><td>UUID FK</td><td>Usuario en zona de descanso</td></tr>
+  <tr><td><code>is_available</code></td><td>BOOLEAN</td><td>Disponible para match</td></tr>
+  <tr><td><code>expires_at</code></td><td>TIMESTAMPTZ</td><td>Expira en 20 minutos</td></tr>
+</table>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>4. Todas las Rutas del Backend</h2>
+
+<h3>Auth (<code>/api/auth</code>)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Auth</th><th>Que hace</th></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/auth/register</td><td>No</td><td>Crear usuario: valida email @cat.com, crea en Supabase Auth + tabla users</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/auth/login</td><td>No</td><td>Login: autentica contra Supabase Auth, retorna JWT + perfil</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/auth/sync-user</td><td>No</td><td>Sincronizar sesion: toma token Supabase, decodifica, retorna perfil</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/auth/create-profile</td><td>No</td><td>Crear perfil: inserta en tabla users despues de registro en Supabase Auth</td></tr>
+</table>
+
+<h3>Usuarios (<code>/api/users</code>)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Que hace</th></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/users/profile</td><td>Obtener perfil completo con URL firmada de foto</td></tr>
+  <tr><td><span class="route-method put">PUT</span></td><td>/api/users/profile</td><td>Actualizar perfil (nombre, edad, campana, turno, piso, bio, intereses...)</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/users/upload-photo</td><td>Subir foto a Supabase Storage, actualizar users.photo</td></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/users/discover</td><td>Discover: perfiles paginados (50/pagina) con filtros</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/users/swipe/:dir/:userId</td><td>Swipe like/nope. Si es mutuo → crear match</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/users/break/available</td><td>Activar zona de descanso (20 min)</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/users/break/stop</td><td>Desactivar zona de descanso</td></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/users/break/find</td><td>Buscar personas disponibles en break</td></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/users/break/zones</td><td>Zonas agrupadas por campana</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/users/break/invite/:userId</td><td>Invitar persona en break (crea match)</td></tr>
+</table>
+
+<h3>Matches (<code>/api/matches</code>)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Que hace</th></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/matches</td><td>Todos los matches del usuario con info del otro + ultimo mensaje</td></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/matches/:id/messages</td><td>Mensajes de un match (marca como leidos)</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/matches/:id/messages</td><td>Enviar mensaje</td></tr>
+</table>
+
+<h3>Admin (<code>/api/admin</code>)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Que hace</th></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/admin/stats</td><td>Estadisticas: total usuarios, activos, matches, mensajes</td></tr>
+  <tr><td><span class="route-method get">GET</span></td><td>/api/admin/users</td><td>Todos los usuarios</td></tr>
+  <tr><td><span class="route-method put">PUT</span></td><td>/api/admin/users/:id/toggle-status</td><td>Activar/desactivar usuario</td></tr>
+  <tr><td><span class="route-method put">PUT</span></td><td>/api/admin/users/:id/toggle-admin</td><td>Toggle permisos admin</td></tr>
+  <tr><td><span class="route-method del">DELETE</span></td><td>/api/admin/users/:id</td><td>Eliminar usuario completo (cascada)</td></tr>
+  <tr><td><span class="route-method post">POST</span></td><td>/api/admin/users</td><td>Crear usuario desde admin</td></tr>
+</table>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>5. Estado Actual — Que esta listo</h2>
+
+<div class="card">
+<table>
+  <tr><th>Feature</th><th>Estado</th><th>Detalle</th></tr>
+  <tr><td>Registro 3 pasos</td><td class="check">Listo</td><td>Nombre/email/password → Campana/rol/turno → Piso/puesto/bio/intereses</td></tr>
+  <tr><td>Login con Supabase</td><td class="check">Listo</td><td>Email + password, JWT para API</td></tr>
+  <tr><td>Discover (swipe)</td><td class="check">Listo</td><td>Tinder-style, like/nope, paginacion 50/pagina</td></tr>
+  <tr><td>Sistema de matches</td><td class="check">Listo</td><td>Mutual like crea match</td></tr>
+  <tr><td>Chat en tiempo real</td><td class="check">Listo</td><td>Socket.IO, typing indicators, persistencia en DB</td></tr>
+  <tr><td>Perfil con foto</td><td class="check">Listo</td><td>Hero layout, subida a Supabase Storage (5MB max)</td></tr>
+  <tr><td>Edicion de perfil</td><td class="check">Listo</td><td>Modal deslizante con todos los campos + intereses</td></tr>
+  <tr><td>Filtros de discover</td><td class="check">Listo</td><td>Modal con toggles: mismo turno, campana, piso, rol</td></tr>
+  <tr><td>Break Zone</td><td class="check">Listo</td><td>20 min, disponible por campana, invitar personas</td></tr>
+  <tr><td>Panel admin</td><td class="check">Listo</td><td>Estadisticas + CRUD usuarios + toggle admin/activo</td></tr>
+  <tr><td>UI dark theme</td><td class="check">Listo</td><td>Responsive, mobile nav, hamburger menu</td></tr>
+  <tr><td>Intereses (6 categorias)</td><td class="check">Listo</td><td>60 intereses, picker por categoria, max 5</td></tr>
+  <tr><td>Privacidad</td><td class="check">Listo</td><td>Ocultar de supervisores</td></tr>
+  <tr><td>Deploy</td><td class="check">Listo</td><td>Vercel (frontend) + Render (backend)</td></tr>
+</table>
 </div>
 
-<div class="section">
-  <h2>2. Stack Tecnologico</h2>
-  <table>
-    <tr><th>Capa</th><th>Tecnologia</th><th>Para que sirve</th></tr>
-    <tr><td>Frontend</td><td>React + Vite</td><td>Interfaz de usuario, routing, estado</td></tr>
-    <tr><td>Backend</td><td>Node.js + Express</td><td>API REST, autenticacion JWT</td></tr>
-    <tr><td>Realtime</td><td>Socket.IO</td><td>Chat en tiempo real</td></tr>
-    <tr><td>Base de datos</td><td>Supabase (PostgreSQL)</td><td>Almacenamiento de usuarios, matches, mensajes</td></tr>
-    <tr><td>Auth</td><td>Supabase Auth</td><td>Registro y login de usuarios</td></tr>
-    <tr><td>Storage</td><td>Supabase Storage</td><td>Fotos de perfil (max 5MB)</td></tr>
-    <tr><td>Deploy Frontend</td><td>Vercel</td><td>Hosting del frontend (gratis)</td></tr>
-    <tr><td>Deploy Backend</td><td>Render</td><td>Hosting del backend (gratis)</td></tr>
-  </table>
-</div>
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>6. Roadmap — Que falta por implementar</h2>
 
-<div class="section">
-  <h2>3. URLs de Produccion</h2>
-  <table>
-    <tr><th>Servicio</th><th>URL</th></tr>
-    <tr><td>Frontend</td><td class="url">https://catinder-app.vercel.app</td></tr>
-    <tr><td>Backend API</td><td class="url">https://catinder.onrender.com</td></tr>
-    <tr><td>GitHub</td><td class="url">https://github.com/helbran84/catinder</td></tr>
-    <tr><td>Supabase</td><td class="url">https://rscyxoumvoyutslvwtqo.supabase.co</td></tr>
-  </table>
-</div>
+<h3>Prioridad Alta</h3>
 
-<div class="section">
-  <h2>4. Usuarios Admin</h2>
-  <table>
-    <tr><th>Email</th><th>Password</th><th>Rol</th></tr>
-    <tr><td>admin@cat.com</td><td>admin123</td><td>Admin</td></tr>
-    <tr><td>raiquen@cat.com</td><td>raiquen123</td><td>Admin</td></tr>
-  </table>
-  <p><strong>Restriccion de registro:</strong> Solo se permiten emails <code>@cat.com</code> (configurado via <code>ALLOWED_DOMAINS</code> en Render).</p>
-</div>
-
-<div class="section">
-  <h2>5. Optimizacion Mobile</h2>
-  <p>La app esta optimizada para dispositivos moviles con las siguientes mejoras:</p>
-  <ul>
-    <li><strong>Navbar:</strong> Menu hamburguesa en pantallas &lt;768px con sidebar animado</li>
-    <li><strong>Bottom Navigation:</strong> Barra de navegacion fija en la parte inferior con iconos de las secciones</li>
-    <li><strong>Swipe Cards:</strong> Tarjetas adaptadas a pantalla completa en mobile</li>
-    <li><strong>Auth Pages:</strong> Login y registro ajustados con padding reducido</li>
-    <li><strong>Chat:</strong> Altura completa ajustada para mobile (100vh - navbar - bottom nav)</li>
-    <li><strong>Admin:</strong> Tablas con scroll horizontal y stats en columna unica</li>
-    <li><strong>Break Zone:</strong> Grid de una columna en mobile</li>
-    <li><strong>Profile:</strong> Foto y formulario reducidos</li>
-  </ul>
-  <p><strong>Breakpoints:</strong> Mobile (&lt;768px), Desktop (&gt;768px)</p>
-</div>
-
-<div class="section">
-  <h2>5. Estructura del Proyecto</h2>
-  <pre style="background:#f5f5f5; padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;">
-CATINDER/
-├── backend/
-│   ├── server.js          # Servidor Express + Socket.IO
-│   ├── supabase-raw.js    # Helper HTTPS raw para Supabase
-│   ├── supabase.js        # Cliente Supabase (no usado)
-│   ├── render.yaml        # Config deploy Render
-│   ├── .env               # Variables de entorno
-│   ├── routes/
-│   │   ├── auth.js        # Login y registro
-│   │   ├── users.js       # Perfil, discover, swipe, break zones
-│   │   ├── matches.js     # Matches y mensajes
-│   │   └── admin.js       # CRUD de usuarios (admin)
-│   └── middleware/
-│       └── auth.js        # Validacion JWT + perfil
-├── frontend/
-│   ├── vercel.json        # Config deploy Vercel
-│   ├── index.html         # Meta tags OG
-│   ├── public/
-│   │   ├── logotipo.png   # Logo llama
-│   │   ├── catinder-logo.png  # Logo con texto
-│   │   └── catinder-text.png  # Texto para navbar
-│   └── src/
-│       ├── App.jsx        # Rutas de la app
-│       ├── App.css        # Navbar glassmorphism
-│       ├── index.css      # Tema global oscuro
-│       ├── context/
-│       │   └── AuthContext.jsx  # Estado de autenticacion
-│       ├── services/
-│       │   └── api.js     # Comunicacion con backend
-│       ├── components/
-│       │   └── Navbar.jsx  # Navegacion principal
-│       └── pages/
-│           ├── LoginPage.jsx       # Login
-│           ├── RegisterPage.jsx    # Registro 3 pasos
-│           ├── DiscoverPage.jsx    # Swipe + filtros
-│           ├── MatchesPage.jsx     # Lista de matches
-│           ├── ChatPage.jsx        # Chat en tiempo real
-│           ├── ProfilePage.jsx     # Editar perfil
-│           ├── BreakZone.jsx       # Zona de descanso por sector
-│           ├── AdminPage.jsx       # Panel de admin
-│           └── Pages.css           # Estilos de todas las paginas
-└── guia-catinder.html     # Esta guia
-  </pre>
-</div>
-
-<div class="section">
-  <h2>6. Funcionalidades</h2>
-  <h3>6.1 Autenticacion</h3>
-  <ul>
-    <li>Registro en 3 pasos: Datos personales, Turno/Empresa, Ubicacion</li>
-    <li>Login con email <code>@cat.com</code> y password</li>
-    <li>JWT token con expiracion de 7 dias</li>
-    <li>Solo emails corporativos validos (configurable via <code>ALLOWED_DOMAINS</code>)</li>
-  </ul>
-
-  <h3>6.2 Discover (Swipe)</h3>
-  <ul>
-    <li>Swipe derecha = like, izquierda = pasar</li>
-    <li>Filtros: buscar por nombre, filtrar por rol (Agente/Lider/Supervisor)</li>
-    <li>Muestra nombre, piso, turno, rol y bio</li>
-    <li>Animaciones CSS para swipe</li>
-  </ul>
-
-  <h3>6.3 Matches y Chat</h3>
-  <ul>
-    <li>Lista de matches mutuos</li>
-    <li>Chat en tiempo real con Socket.IO</li>
-    <li>Mensajes persistidos en Supabase</li>
-    <li>Indicador de usuario en linea</li>
-  </ul>
-
-  <h3>6.4 Intereses</h3>
-  <ul>
-    <li>6 categorias: Deportes, Musica, Peliculas/Series, Comida, Hobbies, Personalidad</li>
-    <li>Maximo 5 intereses por usuario</li>
-    <li>Tags expandibles por categoria</li>
-    <li>Se muestran en perfil, discover y edicion</li>
-    <li>Almacenados como JSON array en Supabase</li>
-  </ul>
-
-  <h3>6.5 Break Zone</h3>
-  <ul>
-    <li>Zona de descanso por sector (Cobranzas / Super Linea)</li>
-    <li>Ve quielen estan disponibles en su turno</li>
-    <li>Separados por campana</li>
-  </ul>
-
-  <h3>6.5 Admin</h3>
-  <ul>
-    <li>Ver todos los usuarios</li>
-    <li>Crear, editar, eliminar usuarios</li>
-    <li>Desactivar cuentas</li>
-    <li>Badges de colores por rol</li>
-  </ul>
-</div>
-
-<div class="section">
-  <h2>7. Variables de Entorno</h2>
-  <h3>Backend (Render)</h3>
-  <table>
-    <tr><th>Variable</th><th>Valor</th></tr>
-    <tr><td><code>SUPABASE_URL</code></td><td>https://rscyxoumvoyutslvwtqo.supabase.co</td></tr>
-    <tr><td><code>SUPABASE_ANON_KEY</code></td><td>eyJhbG... (anon key)</td></tr>
-    <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>eyJhbG... (service role key)</td></tr>
-    <tr><td><code>JWT_SECRET</code></td><td>tu-jwt-secret</td></tr>
-    <tr><td><code>FRONTEND_URL</code></td><td>https://catinder-app.vercel.app</td></tr>
-    <tr><td><code>ALLOWED_DOMAINS</code></td><td>cat.com</td></tr>
-    <tr><td><code>NODE_ENV</code></td><td>production</td></tr>
-  </table>
-
-  <h3>Frontend (Vercel)</h3>
-  <table>
-    <tr><th>Variable</th><th>Valor</th></tr>
-    <tr><td><code>VITE_API_URL</code></td><td>https://catinder.onrender.com/api</td></tr>
-  </table>
-</div>
-
-<div class="section">
-  <h2>8. APIs del Backend</h2>
-  <table>
-    <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
-    <tr><td>GET</td><td><code>/api/health</code></td><td>Health check</td></tr>
-    <tr><td>POST</td><td><code>/api/auth/register</code></td><td>Registrar usuario</td></tr>
-    <tr><td>POST</td><td><code>/api/auth/login</code></td><td>Iniciar sesion</td></tr>
-    <tr><td>GET</td><td><code>/api/users/me</code></td><td>Obtener mi perfil</td></tr>
-    <tr><td>PATCH</td><td><code>/api/users/me</code></td><td>Actualizar mi perfil</td></tr>
-    <tr><td>GET</td><td><code>/api/users/discover</code></td><td>Personas para hacer swipe</td></tr>
-    <tr><td>POST</td><td><code>/api/users/swipe/:userId</code></td><td>Like o dislike</td></tr>
-    <tr><td>GET</td><td><code>/api/users/break/zones</code></td><td>Usuarios en zona de descanso</td></tr>
-    <tr><td>GET</td><td><code>/api/matches</code></td><td>Lista de matches</td></tr>
-    <tr><td>GET</td><td><code>/api/matches/:id/messages</code></td><td>Mensajes de un chat</td></tr>
-    <tr><td>POST</td><td><code>/api/matches/:id/messages</code></td><td>Enviar mensaje</td></tr>
-    <tr><td>GET</td><td><code>/api/admin/users</code></td><td>Todos los usuarios (admin)</td></tr>
-    <tr><td>POST</td><td><code>/api/admin/users</code></td><td>Crear usuario (admin)</td></tr>
-    <tr><td>PATCH</td><td><code>/api/admin/users/:id</code></td><td>Editar usuario (admin)</td></tr>
-    <tr><td>DELETE</td><td><code>/api/admin/users/:id</code></td><td>Eliminar usuario (admin)</td></tr>
-  </table>
-</div>
-
-<div class="section">
-  <h2>9. Deploy</h2>
-  <h3>9.1 Frontend (Vercel)</h3>
-  <ol>
-    <li>Conectar repo de GitHub en vercel.com</li>
-    <li>Configurar <code>VITE_API_URL</code> apuntando al backend</li>
-    <li>Desactivar Deployment Protection en Settings</li>
-    <li>Deploy automatico con cada push a main</li>
-  </ol>
-
-  <h3>9.2 Backend (Render)</h3>
-  <ol>
-    <li>Crear Web Service en render.com</li>
-    <li>Conectar repo GitHub</li>
-    <li>Root Directory: <code>backend</code></li>
-    <li>Build: <code>npm install</code></li>
-    <li>Start: <code>node server.js</code></li>
-    <li>Agregar todas las env vars</li>
-    <li>Plan: Free</li>
-  </ol>
-
-  <h3>9.3 Base de Datos (Supabase)</h3>
-  <ol>
-    <li>Crear proyecto en supabase.com</li>
-    <li>Crear tabla <code>users</code> con los campos necesarios</li>
-    <li>Configurar Auth con email confirmado automaticamente</li>
-    <li>Crear bucket <code>profile-pictures</code> en Storage</li>
-    <li>Obtener URL, anon key y service role key</li>
-  </ol>
-</div>
-
-<div class="section">
-  <h2>10. Diseno Visual</h2>
-  <ul>
-    <li><strong>Tema:</strong> Oscuro (#0D0D1A) con gradientes rosa/naranja</li>
-    <li><strong>Navbar:</strong> Glassmorphism (backdrop-filter blur) + hamburger menu en mobile</li>
-    <li><strong>Bottom Nav:</strong> Barra fija inferior en mobile con iconos de secciones</li>
-    <li><strong>Botones:</strong> Gradiente pink→orange</li>
-    <li><strong>Fondo login:</strong> Animacion de gradientes en movimiento (CSS keyframes)</li>
-    <li><strong>Fondo global:</strong> Gradientes radiales estaticos</li>
-    <li><strong>Cards:</strong> Borderradius 20px, sombras sutiles</li>
-    <li><strong>Inputs:</strong> Borde transparente, glow al focus</li>
-    <li><strong>Logo:</strong> Llama con corazon (#FF2D78 → #FF8C42)</li>
-    <li><strong>Mobile:</strong> Responsive con breakpoints en 768px</li>
-  </ul>
-</div>
-
-<div class="section">
-  <h2>11. Decisiones Tecnicas</h2>
-  <div class="highlight">
-    <strong>Por que raw HTTPS en vez de @supabase/supabase-js?</strong><br>
-    El cliente de Supabase JS retorna resultados vacios en contexto servidor. Se uso <code>https</code> nativo de Node.js para hacer requests directos al REST API de Supabase, lo cual funciona correctamente.
-  </div>
-  <div class="highlight">
-    <strong>Por que vercel.json con rewrite?</strong><br>
-    El patron <code>/((?!.*\.).*)</code> permite que las rutas SPA funcionen (ej: /discover → index.html) mientras que los archivos estaticos (/logotipo.png) se sirven normalmente.
-  </div>
-  <div class="highlight">
-    <strong>Por que ALLOWED_DOMAINS?</strong><br>
-    Para restringir el registro solo a emails corporativos. Se configura en Render y se valida en el endpoint <code>/api/auth/register</code>.
+<div class="todo-item">
+  <span class="todo-icon">⚡</span>
+  <div class="todo-text">
+    <strong>Super Likes</strong><br>
+    <span>Boton de super like (diferente al like normal). Max 3 por dia. Notificacion especial al recibir.</span>
   </div>
 </div>
 
-<div class="section">
-  <h2>12. Comandos Utiles</h2>
-  <table>
-    <tr><th>Accion</th><th>Comando</th></tr>
-    <tr><td>Deploy frontend</td><td><code>vercel --yes --prod</code></td></tr>
-    <tr><td>Restore alias</td><td><code>vercel alias set &lt;deployment-url&gt; catinder-app.vercel.app</code></td></tr>
-    <tr><td>Push codigo</td><td><code>git add .; git commit -m "msg"; git push</code></td></tr>
-    <tr><td>Ver env vars Vercel</td><td><code>vercel env ls</code></td></tr>
-    <tr><td>Renombrar proyecto</td><td><code>vercel project rename &lt;old&gt; &lt;new&gt;</code></td></tr>
-  </table>
+<div class="todo-item">
+  <span class="todo-icon">⚡</span>
+  <div class="todo-text">
+    <strong>Undo / Deshacer swipe</strong><br>
+    <span>Boton para deshacer el ultimo swipe (1 por sesion). Evita perder matches potenciales.</span>
+  </div>
 </div>
 
-<div class="footer">
-  <p>CATINDER - Guia del Proyecto | Generado el 24/06/2026</p>
-  <p>helbran84 | catinder-app.vercel.app</p>
+<div class="todo-item">
+  <span class="todo-icon">⚡</span>
+  <div class="todo-text">
+    <strong>Notificaciones push</strong><br>
+    <span>Nuevo match, nuevo mensaje, invitacion a break. Usar Web Push API o servicio externo.</span>
+  </div>
 </div>
 
+<div class="todo-item">
+  <span class="todo-icon">⚡</span>
+  <div class="todo-text">
+    <strong>Ver fotos de otros en el perfil</strong><br>
+    <span>Agregar galeria de fotos en el perfil (max 4 fotos). Requiere multiple uploads.</span>
+  </div>
+</div>
+
+<h3>Prioridad Media</h3>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Emojis en chat</strong><br>
+    <span>Picker de emojis para el chat. Tambien reacciones a mensajes.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Indicador de "en linea"</strong><br>
+    <span>Mostrar punto verde cuando el otro usuario esta conectado. Ya hay infraestructura de Socket.IO.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Eliminar match</strong><br>
+    <span>Posibilidad de eliminar un match y chat asociado.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Reportar usuario</strong><br>
+    <span>Boton de reportar en el perfil de otro. Guarda en tabla reports. Admin puede revisar.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Historial de swipes en admin</strong><br>
+    <span>Que el admin pueda ver que usuarios se han dado like entre si.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">🔧</span>
+  <div class="todo-text">
+    <strong>Filtros avanzados en discover</strong><br>
+    <span>Filtrar por rango de edad, por intereses en comun, por piso exacto.</span>
+  </div>
+</div>
+
+<h3>Prioridad Baja</h3>
+
+<div class="todo-item">
+  <span class="todo-icon">💡</span>
+  <div class="todo-text">
+    <strong>Modo oscuro / claro</strong><br>
+    <span>Toggle para cambiar tema. Actualmente siempre dark.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">💡</span>
+  <div class="todo-text">
+    <strong>Exportar datos (GDPR)</strong><br>
+    <span>Boton en perfil para descargar todos tus datos en JSON.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">💡</span>
+  <div class="todo-text">
+    <strong>Stat de compatibilidad</strong><br>
+    <span>Mostrar % de compatibilidad basado en intereses compartidos.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">💡</span>
+  <div class="todo-text">
+    <strong>Bio con favoritos</strong><br>
+    <span>Campo "cancion favorita", "pelicula favorita", etc. en el perfil.</span>
+  </div>
+</div>
+
+<div class="todo-item">
+  <span class="todo-icon">💡</span>
+  <div class="todo-text">
+    <strong>Share profile</strong><br>
+    <span>Compartir perfil de otra persona por WhatsApp o link.</span>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>7. Como implementar — Guia tecnica</h2>
+
+<h3>Super Likes</h3>
+<div class="card">
+<pre><code>-- 1. Agregar columna en users
+ALTER TABLE users ADD COLUMN super_likes_daily INT DEFAULT 3;
+
+-- 2. Agregar columna en swipes
+ALTER TABLE swipes ADD COLUMN is_super BOOLEAN DEFAULT FALSE;
+
+-- 3. Frontend: boton azul al lado del like
+&lt;button className="superlike-btn"&gt;⭐&lt;/button&gt;
+
+-- 4. Backend: ruta swipe modificada
+-- POST /api/users/swipe/super/:userId
+-- Decrementar super_likes_daily, crear swipe con is_super=true
+-- Si es mutuo: match + notificacion especial</code></pre>
+</div>
+
+<h3>Notificaciones Push</h3>
+<div class="card">
+<pre><code>-- 1. Frontend: registrar service worker
+navigator.serviceWorker.register('/sw.js');
+const subscription = await reg.pushManager.subscribe({ userVisibleOnly: true });
+
+-- 2. Guardar subscription en DB
+-- Nueva tabla: push_subscriptions (user_id, subscription JSON)
+
+-- 3. Backend: enviar push cuando hay evento nuevo
+-- Usar web-push library (npm install web-push)
+webpush.sendNotification(subscription, JSON.stringify({
+  title: 'Nuevo match!',
+  body: 'A tambien le gustaste!',
+  icon: '/logotipo.png'
+}));</code></pre>
+</div>
+
+<h3>Multi-fotos</h3>
+<div class="card">
+<pre><code>-- 1. Nueva tabla
+CREATE TABLE user_photos (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  photo_url TEXT,
+  position INT DEFAULT 0
+);
+
+-- 2. Frontend: galeria de fotos en perfil
+-- Componente con 4 slots, drag to reorder
+
+-- 3. Backend: upload multiple
+-- POST /api/users/upload-photos (multer array 'photos')</code></pre>
+</div>
+
+<h3>Comando para deploy</h3>
+<div class="card">
+<pre><code># Deploy frontend (Vercel)
+cd frontend
+vercel --prod
+
+# Deploy backend (Render)
+git push origin master  # auto-deploys
+
+# Si necesitas re-asignar alias de Vercel
+vercel alias set &lt;deployment-url&gt; catinder-app.vercel.app</code></pre>
+</div>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>8. Credenciales y URLs</h2>
+
+<div class="card">
+<table>
+  <tr><th>Item</th><th>Valor</th></tr>
+  <tr><td>Frontend URL</td><td><code>https://catinder-app.vercel.app</code></td></tr>
+  <tr><td>Backend URL</td><td><code>https://catinder.onrender.com</code></td></tr>
+  <tr><td>Supabase URL</td><td><code>https://rscyxoumvoyutslvwtqo.supabase.co</code></td></tr>
+  <tr><td>GitHub Repo</td><td><code>https://github.com/helbran84/catinder</code></td></tr>
+  <tr><td>Admin 1</td><td><code>admin@cat.com / admin123</code></td></tr>
+  <tr><td>Admin 2</td><td><code>raiquen@cat.com / raiquen123</code></td></tr>
+  <tr><td>Admin 3</td><td><code>abraham@cat.com / abraham123</code></td></tr>
+</table>
+</div>
+
+<p style="text-align: center; color: #555; margin-top: 3rem; font-size: 0.8rem;">
+  CATINDER v2.0 — Generado el 24 de junio 2026
+</p>
+
+</div>
 </body>
 </html>
