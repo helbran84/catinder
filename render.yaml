@@ -18,6 +18,6 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: ALLOWED_DOMAINS
-        value: empresa.com
+        value: cat.com
       - key: FRONTEND_URL
         sync: false
