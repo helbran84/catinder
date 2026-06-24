@@ -53,9 +53,9 @@ function ProfilePage() {
     });
   };
 
-  const handlePhotoUpdate = (newPhoto) => {
-    setFormData(prev => ({ ...prev, photo: newPhoto }));
-    setProfile(prev => ({ ...prev, photo: newPhoto }));
+  const handlePhotoUpdate = (newPhotoUrl) => {
+    setFormData(prev => ({ ...prev, photo_url: newPhotoUrl }));
+    setProfile(prev => ({ ...prev, photo_url: newPhotoUrl }));
   };
 
   const handleSubmit = async (e) => {
@@ -115,8 +115,8 @@ function ProfilePage() {
       <div className="profile-view">
         {/* Hero Photo */}
         <div className="profile-hero">
-          {profile?.photo ? (
-            <img src={profile.photo} alt={profile.name} className="profile-hero-img" />
+          {(profile?.photo_url || profile?.photo) ? (
+            <img src={profile.photo_url || profile.photo} alt={profile.name} className="profile-hero-img" />
           ) : (
             <div className="profile-hero-placeholder">
               <span>{profile?.name?.charAt(0)}</span>
@@ -199,7 +199,7 @@ function ProfilePage() {
             <div className="profile-modal-body">
               <div className="modal-photo-section">
                 <PhotoUploader
-                  currentPhoto={formData.photo}
+                  currentPhoto={formData.photo_url || formData.photo}
                   onPhotoUpdate={handlePhotoUpdate}
                 />
                 <span className="photo-hint">Toca para cambiar tu foto</span>

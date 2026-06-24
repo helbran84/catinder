@@ -64,18 +64,18 @@ router.put('/profile', authMiddleware, async (req, res) => {
 
 router.post('/upload-photo', authMiddleware, async (req, res) => {
   try {
-    if (!req.files || !req.files.photo) {
+    if (!req.file) {
       return res.status(400).json({ error: 'No se envio ninguna imagen.' });
     }
 
-    const file = req.files.photo;
+    const file = req.file;
     const ext = file.mimetype.split('/')[1];
     const fileName = `${req.user.id}/photo.${ext}`;
 
     const boundary = '----FormBoundary' + Date.now();
     const parts = [];
     parts.push(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: ${file.mimetype}\r\n\r\n`);
-    parts.push(file.data);
+    parts.push(file.buffer);
     parts.push(`\r\n--${boundary}--\r\n`);
 
     const bodyBuffer = Buffer.concat([
@@ -319,16 +319,27 @@ router.get('/break/find', authMiddleware, async (req, res) => {
       return res.json({ message: 'No hay nadie disponible ahora.', available: [] });
     }
 
-    const result = filtered.map(br => ({
-      id: br.users.id,
-      name: br.users.name,
-      campaign: br.users.campaign,
-      shift: br.users.shift,
-      building: br.users.building,
-      floor: br.users.floor,
-      position: br.users.position,
-      photo: br.users.photo
-    }));
+    const result = [];
+    for (const br of filtered) {
+      let photo_url = null;
+      if (br.users.photo) {
+        try {
+          const urlData = await db.post(`/storage/v1/object/sign/profile-photos/${encodeURIComponent(br.users.photo)}`, { expiresIn: 3600 });
+          photo_url = urlData?.signedUrl || null;
+        } catch(e) {}
+      }
+      result.push({
+        id: br.users.id,
+        name: br.users.name,
+        campaign: br.users.campaign,
+        shift: br.users.shift,
+        building: br.users.building,
+        floor: br.users.floor,
+        position: br.users.position,
+        photo: br.users.photo,
+        photo_url
+      });
+    }
 
     res.json({ available: result });
   } catch (error) {
@@ -346,11 +357,18 @@ router.get('/break/zones', authMiddleware, async (req, res) => {
     if (Array.isArray(available) && available.error) throw available;
 
     const zones = {};
-    (Array.isArray(available) ? available : []).forEach(br => {
-      if (!br.users) return;
+    for (const br of (Array.isArray(available) ? available : [])) {
+      if (!br.users) continue;
       const campaign = br.users.campaign || 'Sin sector';
       if (!zones[campaign]) {
         zones[campaign] = [];
+      }
+      let photo_url = null;
+      if (br.users.photo) {
+        try {
+          const urlData = await db.post(`/storage/v1/object/sign/profile-photos/${encodeURIComponent(br.users.photo)}`, { expiresIn: 3600 });
+          photo_url = urlData?.signedUrl || null;
+        } catch(e) {}
       }
       zones[campaign].push({
         id: br.users.id,
@@ -358,9 +376,10 @@ router.get('/break/zones', authMiddleware, async (req, res) => {
         shift: br.users.shift,
         floor: br.users.floor,
         position: br.users.position,
-        photo: br.users.photo
+        photo: br.users.photo,
+        photo_url
       });
-    });
+    }
 
     const result = Object.entries(zones).map(([name, people]) => ({
       name,

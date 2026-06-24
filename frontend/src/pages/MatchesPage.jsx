@@ -53,7 +53,9 @@ function MatchesPage() {
           {matches.map((match) => (
             <Link to={`/chat/${match.id}`} key={match.id} className="match-card">
               <div className="match-photo">
-                {match.otherUser.photo ? (
+                {match.otherUser.photo_url ? (
+                  <img src={match.otherUser.photo_url} alt={match.otherUser.name} />
+                ) : match.otherUser.photo ? (
                   <img src={match.otherUser.photo} alt={match.otherUser.name} />
                 ) : (
                   <div className="photo-placeholder">

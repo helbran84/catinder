@@ -133,7 +133,9 @@ function BreakZone() {
                 {zone.people.map((person) => (
                   <div key={person.id} className="zone-person">
                     <div className="zone-person-photo">
-                      {person.photo ? (
+                      {person.photo_url ? (
+                        <img src={person.photo_url} alt={person.name} />
+                      ) : person.photo ? (
                         <img src={person.photo} alt={person.name} />
                       ) : (
                         <div className="zone-photo-placeholder">
