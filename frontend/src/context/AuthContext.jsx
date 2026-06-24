@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { authService } from '../services/api';
+import { supabase } from '../services/supabaseClient';
+import { api } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -8,32 +9,56 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('catinder_token');
     const savedUser = localStorage.getItem('catinder_user');
-    if (token && savedUser) {
+    const savedToken = localStorage.getItem('catinder_supabase_token');
+    if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    const response = await authService.login(email, password);
-    localStorage.setItem('catinder_token', response.data.token);
-    localStorage.setItem('catinder_user', JSON.stringify(response.data.user));
-    setUser(response.data.user);
-    return response.data;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw new Error(error.message);
+
+    const supabaseToken = data.session.access_token;
+    localStorage.setItem('catinder_supabase_token', supabaseToken);
+
+    const response = await api.post('/auth/sync-user', { supabase_token: supabaseToken });
+    const profile = response.data.user;
+
+    localStorage.setItem('catinder_user', JSON.stringify(profile));
+    setUser(profile);
+    return { user: profile, token: supabaseToken };
   };
 
-  const register = async (data) => {
-    const response = await authService.register(data);
-    localStorage.setItem('catinder_token', response.data.token);
-    localStorage.setItem('catinder_user', JSON.stringify(response.data.user));
-    setUser(response.data.user);
-    return response.data;
+  const register = async (registerData) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: registerData.email,
+      password: registerData.password,
+      options: { data: { name: registerData.name } }
+    });
+    if (error) throw new Error(error.message);
+
+    const supabaseToken = data.session?.access_token;
+    if (!supabaseToken) throw new Error('Error al crear cuenta. Verifica tu email.');
+
+    localStorage.setItem('catinder_supabase_token', supabaseToken);
+
+    const response = await api.post('/auth/create-profile', {
+      supabase_token: supabaseToken,
+      ...registerData
+    });
+    const profile = response.data.user;
+
+    localStorage.setItem('catinder_user', JSON.stringify(profile));
+    setUser(profile);
+    return { user: profile, token: supabaseToken };
   };
 
-  const logout = () => {
-    localStorage.removeItem('catinder_token');
+  const logout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem('catinder_supabase_token');
     localStorage.removeItem('catinder_user');
     setUser(null);
   };

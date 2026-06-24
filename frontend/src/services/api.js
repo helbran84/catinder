@@ -7,16 +7,18 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('catinder_token');
+  const token = localStorage.getItem('catinder_supabase_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
+export { api };
+
 export const authService = {
-  login: (email, password) => api.post('/auth/login', { email, password }),
-  register: (data) => api.post('/auth/register', data)
+  syncUser: (supabaseToken) => api.post('/auth/sync-user', { supabase_token: supabaseToken }),
+  createProfile: (data) => api.post('/auth/create-profile', data)
 };
 
 export const userService = {

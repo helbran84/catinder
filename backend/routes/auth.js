@@ -209,4 +209,136 @@ router.post('/login', async (req, res) => {
   }
 });
 
+async function verifySupabaseToken(token) {
+  const https = require('https');
+  return new Promise((resolve, reject) => {
+    https.get(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey': process.env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`
+      }
+    }, (res) => {
+      let d = '';
+      res.on('data', c => d += c);
+      res.on('end', () => {
+        try { resolve(JSON.parse(d)); } catch(e) { reject(e); }
+      });
+    }).on('error', reject);
+  });
+}
+
+router.post('/sync-user', async (req, res) => {
+  try {
+    const { supabase_token } = req.body;
+    if (!supabase_token) {
+      return res.status(400).json({ error: 'Token requerido.' });
+    }
+
+    const supaUser = await verifySupabaseToken(supabase_token);
+    if (!supaUser.id) {
+      return res.status(401).json({ error: 'Token invalido.' });
+    }
+
+    const profiles = await supabaseQuery(`/rest/v1/users?id=eq.${supaUser.id}&select=*`);
+    const profile = profiles && profiles.length > 0 ? profiles[0] : null;
+
+    if (!profile) {
+      return res.status(404).json({ error: 'Perfil no encontrado. Registrate primero.' });
+    }
+
+    if (!profile.is_active) {
+      return res.status(403).json({ error: 'Cuenta desactivada.' });
+    }
+
+    res.json({
+      user: {
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        campaign: profile.campaign,
+        shift: profile.shift,
+        shift_start: profile.shift_start,
+        shift_end: profile.shift_end,
+        building: profile.building,
+        floor: profile.floor,
+        role: profile.role,
+        position: profile.position,
+        is_admin: profile.is_admin,
+        photo: profile.photo,
+        bio: profile.bio,
+        interests: profile.interests
+      }
+    });
+  } catch (error) {
+    console.error('SYNC ERROR:', error.message);
+    res.status(500).json({ error: 'Error al sincronizar usuario.' });
+  }
+});
+
+router.post('/create-profile', async (req, res) => {
+  try {
+    const { supabase_token, email, name, age, campaign, shift, shift_start, shift_end, floor, role, position, bio, interests } = req.body;
+
+    if (!supabase_token) {
+      return res.status(400).json({ error: 'Token requerido.' });
+    }
+
+    const supaUser = await verifySupabaseToken(supabase_token);
+    if (!supaUser.id) {
+      return res.status(401).json({ error: 'Token invalido.' });
+    }
+
+    if (!isValidCorporateEmail(email)) {
+      return res.status(400).json({ error: 'Debes usar un email @cat.com' });
+    }
+
+    const existing = await supabaseQuery(`/rest/v1/users?id=eq.${supaUser.id}&select=id`);
+    if (existing && existing.length > 0) {
+      return res.json({
+        user: { id: supaUser.id, email, name, campaign, shift, role: role || 'agente', is_admin: false }
+      });
+      return;
+    }
+
+    const profileBody = JSON.stringify({
+      id: supaUser.id,
+      email,
+      name,
+      age: age || null,
+      campaign,
+      shift,
+      shift_start,
+      shift_end,
+      floor: floor || null,
+      role: role || 'agente',
+      position: position || null,
+      bio: bio || null,
+      interests: interests || '[]',
+      is_active: true,
+      is_admin: false
+    });
+
+    const https = require('https');
+    await new Promise((resolve, reject) => {
+      const req2 = https.request(`${process.env.SUPABASE_URL}/rest/v1/users`, {
+        method: 'POST',
+        headers: { ...supabaseHeaders(), 'Content-Length': Buffer.byteLength(profileBody), 'Prefer': 'return=minimal' }
+      }, (res2) => {
+        let d = '';
+        res2.on('data', c => d += c);
+        res2.on('end', () => resolve(d));
+      });
+      req2.write(profileBody);
+      req2.end();
+    });
+
+    res.status(201).json({
+      user: { id: supaUser.id, email, name, campaign, shift, role: role || 'agente', is_admin: false }
+    });
+  } catch (error) {
+    console.error('CREATE PROFILE ERROR:', error.message);
+    res.status(500).json({ error: 'Error al crear perfil.' });
+  }
+});
+
 module.exports = router;
