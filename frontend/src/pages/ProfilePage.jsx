@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/api';
 import InterestPicker from '../components/InterestPicker';
-import { INTERESTS } from '../data/interests';
+import PhotoUploader from '../components/PhotoUploader';
 
 function ProfilePage() {
   const [profile, setProfile] = useState(null);
@@ -45,20 +45,23 @@ function ProfilePage() {
       manana: { start: '09:00', end: '14:30' },
       tarde: { start: '14:30', end: '20:00' }
     };
-
     setFormData({
       ...formData,
       shift,
-      shift_start: shiftTimes[shift]?.start || formData.shift_start,
-      shift_end: shiftTimes[shift]?.end || formData.shift_end
+      shift_start: shiftTimes[shift]?.start || '',
+      shift_end: shiftTimes[shift]?.end || ''
     });
+  };
+
+  const handlePhotoUpdate = (newPhoto) => {
+    setFormData(prev => ({ ...prev, photo: newPhoto }));
+    setProfile(prev => ({ ...prev, photo: newPhoto }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setMessage('');
-
     try {
       await userService.updateProfile({
         ...formData,
@@ -76,10 +79,7 @@ function ProfilePage() {
   };
 
   const getShiftLabel = (shift) => {
-    const labels = {
-      manana: 'Turno Ma\u00F1ana',
-      tarde: 'Turno Tarde'
-    };
+    const labels = { manana: 'Manana', tarde: 'Tarde' };
     return labels[shift] || shift;
   };
 
@@ -88,7 +88,7 @@ function ProfilePage() {
       agente: 'Agente',
       lider: 'Lider',
       supervisor: 'Supervisor',
-      admin_sistema: 'Admin Sistema'
+      admin_sistema: 'Admin'
     };
     return labels[role] || role;
   };
@@ -106,115 +106,127 @@ function ProfilePage() {
 
   return (
     <div className="profile-page">
-      <div className="page-header">
-        <h1>Mi Perfil</h1>
-      </div>
-
       {message && (
-        <div className={`message ${message.includes('Error') ? 'error' : 'success'}`}>
+        <div className={`profile-message ${message.includes('Error') ? 'error' : 'success'}`}>
           {message}
         </div>
       )}
 
-      <div className="profile-container">
-        <div className="profile-card-large">
-          <div className="profile-photo-large">
-            {profile?.photo ? (
-              <img src={profile.photo} alt={profile.name} />
-            ) : (
-              <div className="photo-placeholder-large">
-                <span>{profile?.name?.charAt(0)}</span>
+      <div className="profile-view">
+        {/* Hero Photo */}
+        <div className="profile-hero">
+          {profile?.photo ? (
+            <img src={profile.photo} alt={profile.name} className="profile-hero-img" />
+          ) : (
+            <div className="profile-hero-placeholder">
+              <span>{profile?.name?.charAt(0)}</span>
+            </div>
+          )}
+          <div className="profile-hero-gradient"></div>
+          <div className="profile-hero-info">
+            <h1>{profile?.name}, {profile?.age}</h1>
+            <p>{profile?.position || 'Sin puesto'}</p>
+          </div>
+        </div>
+
+        {/* Info Cards */}
+        <div className="profile-sections">
+          <div className="profile-section-card">
+            <div className="section-row">
+              <span className="section-icon">🏢</span>
+              <div>
+                <span className="section-label">Campana</span>
+                <span className="section-value">{profile?.campaign || 'Sin asignar'}</span>
               </div>
-            )}
+            </div>
+            <div className="section-divider"></div>
+            <div className="section-row">
+              <span className="section-icon">⏰</span>
+              <div>
+                <span className="section-label">Turno {getShiftLabel(profile?.shift)}</span>
+                <span className="section-value">{profile?.shift_start} - {profile?.shift_end}</span>
+              </div>
+            </div>
+            <div className="section-divider"></div>
+            <div className="section-row">
+              <span className="section-icon">📍</span>
+              <div>
+                <span className="section-label">{getRoleLabel(profile?.role)}</span>
+                <span className="section-value">{profile?.floor || 'Sin piso asignado'}</span>
+              </div>
+            </div>
           </div>
 
-          {!editing ? (
-            <div className="profile-details">
-              <h2>{profile?.name}</h2>
-              {profile?.age && <p className="detail-age">{profile.age} años</p>}
-              
-              <div className="detail-shift">
-                <span className="shift-badge">{getShiftLabel(profile?.shift)}</span>
-                <span className="shift-time">{profile?.shift_start} - {profile?.shift_end}</span>
-              </div>
-
-              {profile?.campaign && (
-                <p className="detail-campaign">{profile.campaign}</p>
-              )}
-              
-              {profile?.position && (
-                <p className="detail-position">{profile.position}</p>
-              )}
-              
-              <p className="detail-role">{getRoleLabel(profile?.role)}</p>
-              
-              {profile?.floor && (
-                <p className="detail-location">
-                  {profile.floor}
-                </p>
-              )}
-              
-              {profile?.bio && (
-                <p className="detail-bio">{profile.bio}</p>
-              )}
-              
-              {profile?.interests && profile.interests.length > 0 && (
-                <div className="detail-interests">
-                  {Array.isArray(profile.interests)
-                    ? profile.interests.map((interest, index) => (
-                        <span key={interest.id || index} className="interest-tag">{interest.name || interest}</span>
-                      ))
-                    : profile.interests.split(',').map((interest, index) => (
-                        <span key={index} className="interest-tag">{interest.trim()}</span>
-                      ))
-                  }
-                </div>
-              )}
-
-              <div className="detail-privacy">
-                <span className={`privacy-status ${profile?.hide_from_bosses ? 'active' : ''}`}>
-                  {profile?.hide_from_bosses ? '🔒 Oculto de superiores' : '👁️ Visible para todos'}
-                </span>
-              </div>
-              
-              <button onClick={() => setEditing(true)} className="btn-primary">
-                Editar Perfil
-              </button>
+          {profile?.bio && (
+            <div className="profile-section-card">
+              <h3>Sobre mi</h3>
+              <p className="section-bio">{profile.bio}</p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="profile-form">
-              <div className="form-section">
-                <h3>Datos Personales</h3>
-                
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Nombre</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name || ''}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Edad</label>
-                    <input
-                      type="number"
-                      name="age"
-                      value={formData.age || ''}
-                      onChange={handleChange}
-                      min="18"
-                      max="100"
-                    />
-                  </div>
-                </div>
+          )}
+
+          {profile?.interests && (Array.isArray(profile.interests) ? profile.interests.length > 0 : true) && (
+            <div className="profile-section-card">
+              <h3>Intereses</h3>
+              <div className="profile-interests-grid">
+                {(Array.isArray(profile.interests) ? profile.interests : profile.interests.split(',')).map((interest, i) => (
+                  <span key={i} className="interest-pill">{interest.name || interest}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="profile-section-card">
+            <div className="privacy-row">
+              <span>{profile?.hide_from_bosses ? '🔒 Oculto de superiores' : '👁️ Visible para todos'}</span>
+            </div>
+          </div>
+
+          <button onClick={() => setEditing(true)} className="btn-edit-profile">
+            ✏️ Editar Perfil
+          </button>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      {editing && (
+        <div className="profile-modal-overlay" onClick={() => setEditing(false)}>
+          <div className="profile-modal" onClick={e => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <h2>Editar Perfil</h2>
+              <button className="modal-close" onClick={() => setEditing(false)}>✕</button>
+            </div>
+
+            <div className="profile-modal-body">
+              <div className="modal-photo-section">
+                <PhotoUploader
+                  currentPhoto={formData.photo}
+                  onPhotoUpdate={handlePhotoUpdate}
+                />
+                <span className="photo-hint">Toca para cambiar tu foto</span>
               </div>
 
-              <div className="form-section">
-                <h3>Datos Laborales</h3>
-                
-                <div className="form-group">
+              <form onSubmit={handleSubmit}>
+                <div className="modal-field">
+                  <label>Nombre</label>
+                  <input type="text" name="name" value={formData.name || ''} onChange={handleChange} required />
+                </div>
+
+                <div className="modal-field">
+                  <label>Edad</label>
+                  <input type="number" name="age" value={formData.age || ''} onChange={handleChange} min="18" max="100" />
+                </div>
+
+                <div className="modal-field">
+                  <label>Puesto</label>
+                  <input type="text" name="position" value={formData.position || ''} onChange={handleChange} placeholder="Ej: Agente de Atencion" />
+                </div>
+
+                <div className="modal-field">
+                  <label>Bio</label>
+                  <textarea name="bio" value={formData.bio || ''} onChange={handleChange} rows="3" placeholder="Cuentanos algo de ti..." />
+                </div>
+
+                <div className="modal-field">
                   <label>Campana</label>
                   <select name="campaign" value={formData.campaign || ''} onChange={handleChange}>
                     <option value="">Seleccionar</option>
@@ -223,7 +235,7 @@ function ProfilePage() {
                   </select>
                 </div>
 
-                <div className="form-group">
+                <div className="modal-field">
                   <label>Rol</label>
                   <select name="role" value={formData.role || ''} onChange={handleChange}>
                     <option value="agente">Agente</option>
@@ -232,78 +244,27 @@ function ProfilePage() {
                   </select>
                 </div>
 
-                <div className="form-group">
+                <div className="modal-field">
                   <label>Turno</label>
                   <select name="shift" value={formData.shift || ''} onChange={handleShiftChange}>
                     <option value="">Seleccionar</option>
-                    <option value="manana">Turno Mañana (09:00 - 14:30)</option>
-                    <option value="tarde">Turno Tarde (14:30 - 20:00)</option>
+                    <option value="manana">Manana (09:00 - 14:30)</option>
+                    <option value="tarde">Tarde (14:30 - 20:00)</option>
                   </select>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Horario Inicio</label>
-                    <input
-                      type="time"
-                      name="shift_start"
-                      value={formData.shift_start || ''}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Horario Fin</label>
-                    <input
-                      type="time"
-                      name="shift_end"
-                      value={formData.shift_end || ''}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-section">
-                <h3>Ubicacion</h3>
-                
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Piso</label>
-                    <select name="floor" value={formData.floor || ''} onChange={handleChange}>
-                      <option value="">Seleccionar</option>
-                      <option value="Piso 1">Piso 1</option>
-                      <option value="Piso 2">Piso 2</option>
-                      <option value="Piso 3">Piso 3</option>
-                      <option value="Piso 4">Piso 4</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-section">
-                <h3>Sobre Ti</h3>
-                
-                <div className="form-group">
-                  <label>Puesto</label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={formData.position || ''}
-                    onChange={handleChange}
-                  />
+                <div className="modal-field">
+                  <label>Piso</label>
+                  <select name="floor" value={formData.floor || ''} onChange={handleChange}>
+                    <option value="">Seleccionar</option>
+                    <option value="Piso 1">Piso 1</option>
+                    <option value="Piso 2">Piso 2</option>
+                    <option value="Piso 3">Piso 3</option>
+                    <option value="Piso 4">Piso 4</option>
+                  </select>
                 </div>
 
-                <div className="form-group">
-                  <label>Bio</label>
-                  <textarea
-                    name="bio"
-                    value={formData.bio || ''}
-                    onChange={handleChange}
-                    rows="3"
-                  />
-                </div>
-
-                <div className="form-group">
+                <div className="modal-field">
                   <label>Intereses (maximo 5)</label>
                   <InterestPicker
                     selected={selectedInterests}
@@ -311,41 +272,30 @@ function ProfilePage() {
                     max={5}
                   />
                 </div>
-              </div>
 
-              <div className="form-section">
-                <h3>Privacidad</h3>
-                
-                <label className="checkbox-label">
+                <label className="modal-toggle">
+                  <span>Ocultarme de superiores</span>
                   <input
                     type="checkbox"
-                    name="hide_from_bosses"
                     checked={formData.hide_from_bosses === 1}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      hide_from_bosses: e.target.checked ? 1 : 0
-                    })}
+                    onChange={(e) => setFormData({ ...formData, hide_from_bosses: e.target.checked ? 1 : 0 })}
                   />
-                  <span>Ocultarme de superiores y supervisores</span>
+                  <span className="toggle-switch"></span>
                 </label>
-              </div>
 
-              <div className="form-actions">
-                <button 
-                  type="button" 
-                  onClick={() => { setEditing(false); setFormData(profile); }}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-primary" disabled={saving}>
-                  {saving ? 'Guardando...' : 'Guardar Cambios'}
-                </button>
-              </div>
-            </form>
-          )}
+                <div className="modal-actions">
+                  <button type="button" className="btn-cancel" onClick={() => { setEditing(false); setFormData(profile); }}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn-save" disabled={saving}>
+                    {saving ? 'Guardando...' : 'Guardar'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
