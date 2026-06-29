@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const multer = require('multer');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -21,14 +20,11 @@ const io = new Server(server, {
   }
 });
 
-const upload = multer({ storage: multer.memoryStorage() });
-
 app.use(cors({
   origin: [FRONTEND_URL, 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 app.use(express.json());
-app.use(upload.single('photo'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -1,9 +1,11 @@
 const express = require('express');
 const https = require('https');
+const multer = require('multer');
 const db = require('../supabase-raw');
 const { authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
@@ -62,7 +64,7 @@ router.put('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-router.post('/upload-photo', authMiddleware, async (req, res) => {
+router.post('/upload-photo', authMiddleware, upload.single('photo'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No se envio ninguna imagen.' });

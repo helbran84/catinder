@@ -30,7 +30,11 @@ export const userService = {
   getDiscover: (page = 1, filters = {}) => {
     const params = new URLSearchParams({ page: page.toString() });
     Object.entries(filters).forEach(([key, value]) => {
-      if (value) params.append(key, 'true');
+      if (value === true) {
+        params.append(key, 'true');
+      } else if (typeof value === 'string' && value) {
+        params.append(key, value);
+      }
     });
     return api.get(`/users/discover?${params.toString()}`);
   },

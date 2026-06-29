@@ -321,18 +321,19 @@
 <table>
   <tr><th>Feature</th><th>Estado</th><th>Detalle</th></tr>
   <tr><td>Registro 3 pasos</td><td class="check">Listo</td><td>Nombre/email/password → Campana/rol/turno → Piso/puesto/bio/intereses</td></tr>
-  <tr><td>Login con Supabase</td><td class="check">Listo</td><td>Email + password, JWT para API</td></tr>
-  <tr><td>Discover (swipe)</td><td class="check">Listo</td><td>Tinder-style, like/nope, paginacion 50/pagina</td></tr>
+  <tr><td>Login con Supabase</td><td class="check">Listo</td><td>Email + password via Supabase JS client directo, JWT para API</td></tr>
+  <tr><td>Discover (swipe)</td><td class="check">Listo</td><td>Tinder-style, like/nope, paginacion 50/pagina, filtros con toggles</td></tr>
   <tr><td>Sistema de matches</td><td class="check">Listo</td><td>Mutual like crea match</td></tr>
   <tr><td>Chat en tiempo real</td><td class="check">Listo</td><td>Socket.IO, typing indicators, persistencia en DB</td></tr>
-  <tr><td>Perfil con foto</td><td class="check">Listo</td><td>Hero layout, subida a Supabase Storage (5MB max)</td></tr>
+  <tr><td>Perfil con foto</td><td class="check">Listo</td><td>Hero layout (420px), subida a Supabase Storage (5MB max), PhotoUploader component</td></tr>
   <tr><td>Edicion de perfil</td><td class="check">Listo</td><td>Modal deslizante con todos los campos + intereses</td></tr>
-  <tr><td>Filtros de discover</td><td class="check">Listo</td><td>Modal con toggles: mismo turno, campana, piso, rol</td></tr>
+  <tr><td>Filtros de discover</td><td class="check">Listo</td><td>Modal con toggles: mismo turno, campana, piso, rol (select). Badge counter</td></tr>
   <tr><td>Break Zone</td><td class="check">Listo</td><td>20 min, disponible por campana, invitar personas</td></tr>
   <tr><td>Panel admin</td><td class="check">Listo</td><td>Estadisticas + CRUD usuarios + toggle admin/activo</td></tr>
-  <tr><td>UI dark theme</td><td class="check">Listo</td><td>Responsive, mobile nav, hamburger menu</td></tr>
+  <tr><td>UI dark theme</td><td class="check">Listo</td><td>Responsive, mobile nav, hamburger menu, bottom tab bar</td></tr>
   <tr><td>Intereses (6 categorias)</td><td class="check">Listo</td><td>60 intereses, picker por categoria, max 5</td></tr>
   <tr><td>Privacidad</td><td class="check">Listo</td><td>Ocultar de supervisores</td></tr>
+  <tr><td>Photo URLs firmadas</td><td class="check">Listo</td><td>Todos los GET endpoints devuelven photo_url (signed URL) + photo (raw path)</td></tr>
   <tr><td>Deploy</td><td class="check">Listo</td><td>Vercel (frontend) + Render (backend)</td></tr>
 </table>
 </div>
@@ -538,7 +539,22 @@ vercel alias set &lt;deployment-url&gt; catinder-app.vercel.app</code></pre>
 
 <!-- ============================================ -->
 <div class="section-divider"></div>
-<h2>8. Credenciales y URLs</h2>
+<h2>8. Bugs corregidos recientemente</h2>
+
+<div class="card">
+<table>
+  <tr><th>Bug</th><th>Archivo</th><th>Solucion</th></tr>
+  <tr><td>Filtros de discover pierden valor de role_filter</td><td>api.js:33</td><td>Se enviaba <code>"true"</code> en vez del valor real. Corregido para pasar strings directamente</td></tr>
+  <tr><td>Memory leak en PhotoUploader</td><td>PhotoUploader.jsx</td><td>Object URL no se liberaba. Agregado <code>URL.revokeObjectURL</code> en cleanup</td></tr>
+  <tr><td>Multer usa <code>req.files</code> en vez de <code>req.file</code></td><td>users.js</td><td>Con <code>.single()</code>, el archivo va en <code>req.file</code> y el buffer en <code>file.buffer</code></td></tr>
+  <tr><td>Variable CSS <code>--bg-primary</code> faltante</td><td>index.css</td><td>Agregada en <code>:root</code> para que modales y gradientes funcionen correctamente</td></tr>
+  <tr><td>photo_url no se retornaba en break/matches endpoints</td><td>users.js, matches.js</td><td>Agregado signed URL en todos los GET endpoints que devuelven usuarios</td></tr>
+</table>
+</div>
+
+<!-- ============================================ -->
+<div class="section-divider"></div>
+<h2>9. Credenciales y URLs</h2>
 
 <div class="card">
 <table>
@@ -554,7 +570,7 @@ vercel alias set &lt;deployment-url&gt; catinder-app.vercel.app</code></pre>
 </div>
 
 <p style="text-align: center; color: #555; margin-top: 3rem; font-size: 0.8rem;">
-  CATINDER v2.0 — Generado el 24 de junio 2026
+  CATINDER v2.1 — Generado el 29 de junio 2026
 </p>
 
 </div>

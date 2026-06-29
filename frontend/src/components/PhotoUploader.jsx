@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { userService } from '../services/api';
 
 function PhotoUploader({ currentPhoto, onPhotoUpdate }) {
@@ -6,6 +6,12 @@ function PhotoUploader({ currentPhoto, onPhotoUpdate }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef();
+
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
